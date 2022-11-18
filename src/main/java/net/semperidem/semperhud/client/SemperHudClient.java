@@ -21,9 +21,8 @@ public class SemperHudClient implements ClientModInitializer {
 
     public static SemperHudRenderer getInstance(){
         if (instance == null) {
-            return new SemperHudRenderer();
-        } else {
-            return instance;
+            instance = new SemperHudRenderer();
         }
+        return instance;
     }
 }

@@ -53,9 +53,9 @@ public class ExperienceWidgetRenderer {
         RenderSystem.setShaderTexture(0, EXP_BAR_EMPTY);
         DrawableHelper.drawTexture(matrices, 1, 50,0, 0, 0, 256, 5, 256, 5);
         RenderSystem.setShaderTexture(0, EXP_BAR_GAIN);
-        DrawableHelper.drawTexture(matrices, 1, 50,0, 0, 0, (int)animationCurrentProgress * 256, 5, 256, 5);
+        DrawableHelper.drawTexture(matrices, 1, 50,0, 0, 0, (int)(animationTargetProgress * 256), 5, 256, 5);
         RenderSystem.setShaderTexture(0, EXP_BAR_FULL);
-        DrawableHelper.drawTexture(matrices, 1, 50,0, 0, 0, (int)animationTargetProgress * 256, 5, 256, 5);
+        DrawableHelper.drawTexture(matrices, 1, 50,0, 0, 0, (int)(animationCurrentProgress * 256), 5, 256, 5);
 
     }
 
@@ -95,7 +95,7 @@ public class ExperienceWidgetRenderer {
         RenderSystem.setShaderTexture(0, EXP_INFO);
         DrawableHelper.drawTexture(matrices, 1, 55,1, 0, 0, 48, 48, 48, 48);
         matrices.scale(1.5f,1.5f,1.5f);
-        DrawableHelper.drawStringWithShadow(matrices, MinecraftClient.getInstance().textRenderer, currentLevelString, 1 + 16 + SemperHudRenderer.getCentredText(Text.of(String.valueOf(currentLevel))),41,16768512);
+        DrawableHelper.drawStringWithShadow(matrices, MinecraftClient.getInstance().textRenderer, currentLevelString, 1 + 16 + SemperHudRenderer.getCentredText(Text.of(currentLevelString)),41,16768512);
         matrices.scale(2/3f,2/3f, 2/3f);
         DrawableHelper.drawStringWithShadow(matrices, MinecraftClient.getInstance().textRenderer, currentXpString, 1 + 24 + SemperHudRenderer.getCentredText(Text.of(String.valueOf(currentXp))),80,16768512);
         DrawableHelper.drawStringWithShadow(matrices, MinecraftClient.getInstance().textRenderer, nextXpString, 1 + 24 + SemperHudRenderer.getCentredText(Text.of(String.valueOf(nextLevelXp))),91,16768512);
