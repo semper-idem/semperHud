@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "semperhud",
+  "version": "${version}",
+  "name": "SemperHud",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/semperhud/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "net.semperidem.semperhud.client.SemperHudClient"
+    ]
+  },
+  "mixins": [
+    "semperhud.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.10",
+    "fabric": "*",
+    "minecraft": "1.19.2"
+  }
+}
