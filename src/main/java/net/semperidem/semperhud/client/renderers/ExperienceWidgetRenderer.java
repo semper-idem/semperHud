@@ -2,61 +2,90 @@ package net.semperidem.semperhud.client.renderers;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.semperidem.semperhud.client.SemperHudClient;
 
 public class ExperienceWidgetRenderer {
-    private static final String EXP_STRING = "textures/gui/experience/xp-";
-    private static final Identifier EXP_BAR_EMPTY = new Identifier(SemperHudClient.getModId(), EXP_STRING + "bar-empty.png");
-    private static final Identifier EXP_BAR_FULL = new Identifier(SemperHudClient.getModId(), EXP_STRING + "bar-full.png");
-    private static final Identifier EXP_BAR_GAIN = new Identifier(SemperHudClient.getModId(), EXP_STRING + "bar-gaining.png");
-    private static final Identifier EXP_INFO = new Identifier(SemperHudClient.getModId(), EXP_STRING + "info.png");
+    private static final int EXP_BAR_HEIGHT = 5;
+    private static final int EXP_BAR_WIDTH = 256;
 
+    private static final int EXP_INFO_HEIGHT = 48;
+    private static final int EXP_INFO_WIDTH = 48;
 
-    private static final long animationLength = 2000;
+    private static final int EXP_WIDGET_X = 1;
+    private static final int EXP_WIDGET_Y = 1;
 
-    private PlayerEntity player;
+    private static final long ANIMATION_LENGTH = 2000;
 
-    private long animationStartTimeStamp = 0;
+    private static final int TEXT_COLOR = 16768512;
+
+    private static final String EXP_STRING = "textures/gui/experience/";
+    private static final Identifier EXP_BAR_EMPTY = new Identifier(SemperHudClient.getModId(), EXP_STRING + "exp-bar-empty.png");
+    private static final Identifier EXP_BAR_FULL = new Identifier(SemperHudClient.getModId(), EXP_STRING + "exp-bar-full.png");
+    private static final Identifier EXP_BAR_GAIN = new Identifier(SemperHudClient.getModId(), EXP_STRING + "exp-bar-gain.png");
+    private static final Identifier EXP_INFO = new Identifier(SemperHudClient.getModId(), EXP_STRING + "exp-info.png");
+
+    private MinecraftClient client;
+
+    private long animationStartTS = 0;
     private float startLevel = 0;
     private float currentLevel = 0;
     private float animationTargetLevel = 0;
 
     public ExperienceWidgetRenderer(MinecraftClient client) {
-        this.player = client.player;
+        this.client = client;
         this.startLevel = getPlayerLevel();
         this.currentLevel = this.startLevel;
         this.animationTargetLevel = this.startLevel;
     }
 
     public void renderExperienceWidget(MatrixStack matrices) {
-        long animationCurrentTimestamp = System.currentTimeMillis();
-        if (this.animationTargetLevel != getPlayerLevel()) {
-            this.animationTargetLevel = getPlayerLevel();
-            this.animationStartTimeStamp = animationCurrentTimestamp;
-            this.startLevel = currentLevel;
-        }
+        long animationCurrentTS = System.currentTimeMillis();
+        triggerAnimation(animationCurrentTS);
 
-        this.currentLevel = getCurrentAnimationLevel(animationCurrentTimestamp);
+        this.currentLevel = getCurrentAnimationLevel(animationCurrentTS);
+
+        matrices.push();
         renderExperienceBar(matrices);
         renderExperienceInfo(matrices);
+        matrices.pop();
     }
 
     private void renderExperienceBar(MatrixStack matrices) {
         float animationCurrentProgress = getLevelProgress(this.currentLevel);
         float animationTargetProgress = getAnimationTargetProgress();
 
-        RenderSystem.setShaderTexture(0, EXP_BAR_EMPTY);
-        DrawableHelper.drawTexture(matrices, 1, 50,0, 0, 0, 256, 5, 256, 5);
-        RenderSystem.setShaderTexture(0, EXP_BAR_GAIN);
-        DrawableHelper.drawTexture(matrices, 1, 50,0, 0, 0, (int)(animationTargetProgress * 256), 5, 256, 5);
-        RenderSystem.setShaderTexture(0, EXP_BAR_FULL);
-        DrawableHelper.drawTexture(matrices, 1, 50,0, 0, 0, (int)(animationCurrentProgress * 256), 5, 256, 5);
+        drawExpBar(matrices, 1, EXP_BAR_EMPTY);
+        drawExpBar(matrices, animationTargetProgress, EXP_BAR_GAIN);
+        drawExpBar(matrices, animationCurrentProgress, EXP_BAR_FULL);
+    }
 
+    private void triggerAnimation(long animationCurrentTS) {
+        if (this.animationTargetLevel != getPlayerLevel()) {
+            this.animationTargetLevel = getPlayerLevel();
+            this.animationStartTS = animationCurrentTS;
+            this.startLevel = currentLevel;
+        }
+    }
+
+    private void drawExpBar(MatrixStack matrices, float barProgress, Identifier texture) {
+        RenderSystem.setShaderTexture(0, texture);
+        DrawableHelper.drawTexture(
+                matrices,
+                EXP_WIDGET_X,
+                EXP_WIDGET_Y,
+                0,
+                0,
+                0,
+                (int)(barProgress * EXP_BAR_WIDTH),
+                EXP_BAR_HEIGHT,
+                EXP_BAR_WIDTH,
+                EXP_BAR_HEIGHT
+        );
     }
 
     private float getAnimationTargetProgress() {
@@ -68,21 +97,24 @@ public class ExperienceWidgetRenderer {
         return (float) (level - Math.floor(level));
     }
 
-    private float getCurrentAnimationLevel(long animationCurrentTimestamp){
-        return this.startLevel + ((this.animationTargetLevel - startLevel) * getAnimationPercent(animationCurrentTimestamp));
+    private float getCurrentAnimationLevel(long animationCurrentTS){
+        return this.startLevel + ((this.animationTargetLevel - startLevel) * getAnimationPercent(animationCurrentTS));
     }
 
     private float getPlayerLevel(){
-        return this.player.experienceLevel + this.player.experienceProgress;
+        if (this.client.player != null) {
+            return this.client.player.experienceLevel + this.client.player.experienceProgress;
+        }
+        return 0;
     }
 
-    private float getAnimationPercent(long current){
-       return current - this.animationStartTimeStamp > animationLength ?
-            1 :
-            (current -  this.animationStartTimeStamp)  / (animationLength * 1.0f);
+    private float getAnimationPercent(long animationCurrentTS){
+        boolean animationIsDone = animationCurrentTS - this.animationStartTS > ANIMATION_LENGTH;
+        return  animationIsDone ? 1 : (animationCurrentTS -  this.animationStartTS)  / (ANIMATION_LENGTH * 1.0f);
     }
 
     private void renderExperienceInfo(MatrixStack matrices) {
+        renderExperienceInfoContainer(matrices);
         int currentLevelInt = (int)Math.floor(this.currentLevel);
         int nextLevelXp = getNextLevelExperience((int) Math.floor(this.currentLevel));
         int currentXp = (int) (nextLevelXp * (this.currentLevel - currentLevelInt));
@@ -91,17 +123,41 @@ public class ExperienceWidgetRenderer {
         String currentXpString = String.valueOf(currentXp);
         String nextXpString = String.valueOf(nextLevelXp);
 
-        matrices.push();
+        renderExperienceInfoText(matrices, 1.5f, client.textRenderer, currentLevelString, 6);
+        renderExperienceInfoText(matrices, 1, client.textRenderer, currentXpString, 26);
+        renderExperienceInfoText(matrices, 1, client.textRenderer, nextXpString, 36);
+    }
+
+
+    private void renderExperienceInfoText(MatrixStack matrices, float scalingFactor, TextRenderer textRenderer, String text, int textY){
+        matrices.scale(scalingFactor,scalingFactor,scalingFactor);
+        int x = (int) ((EXP_WIDGET_X + (EXP_INFO_WIDTH/2) + SemperHudRenderer.getCentredText(Text.of(text))) / scalingFactor);
+        int y = (int) ((EXP_WIDGET_Y + EXP_BAR_HEIGHT + textY) / scalingFactor);
+        DrawableHelper.drawStringWithShadow(
+                matrices,
+                textRenderer,
+                text,
+                x,
+                y,
+                TEXT_COLOR
+        );
+        matrices.scale(1 / scalingFactor,1 / scalingFactor, 1 / scalingFactor);
+    }
+
+    private void renderExperienceInfoContainer(MatrixStack matrices) {
         RenderSystem.setShaderTexture(0, EXP_INFO);
-        DrawableHelper.drawTexture(matrices, 1, 55,1, 0, 0, 48, 48, 48, 48);
-        matrices.scale(1.5f,1.5f,1.5f);
-        DrawableHelper.drawStringWithShadow(matrices, MinecraftClient.getInstance().textRenderer, currentLevelString, 1 + 16 + SemperHudRenderer.getCentredText(Text.of(currentLevelString)),41,16768512);
-        matrices.scale(2/3f,2/3f, 2/3f);
-        DrawableHelper.drawStringWithShadow(matrices, MinecraftClient.getInstance().textRenderer, currentXpString, 1 + 24 + SemperHudRenderer.getCentredText(Text.of(String.valueOf(currentXp))),80,16768512);
-        DrawableHelper.drawStringWithShadow(matrices, MinecraftClient.getInstance().textRenderer, nextXpString, 1 + 24 + SemperHudRenderer.getCentredText(Text.of(String.valueOf(nextLevelXp))),91,16768512);
-
-        matrices.pop();
-
+        DrawableHelper.drawTexture(
+                matrices,
+                EXP_WIDGET_X,
+                EXP_WIDGET_Y + EXP_BAR_HEIGHT,
+                0,
+                0,
+                0,
+                EXP_INFO_WIDTH,
+                EXP_INFO_HEIGHT,
+                EXP_INFO_WIDTH,
+                EXP_INFO_HEIGHT
+        );
     }
 
 

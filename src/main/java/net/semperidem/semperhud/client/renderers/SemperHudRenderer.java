@@ -1,6 +1,8 @@
 package net.semperidem.semperhud.client.renderers;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
@@ -23,6 +25,7 @@ public class SemperHudRenderer {
         renderHealthBar(matrices);
         renderIcons(matrices);
     }
+
 
     private static void renderHealthBar(MatrixStack matrices){
 
