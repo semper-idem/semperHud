@@ -1,16 +1,16 @@
 package net.semperidem.semperhud.client.renderers;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
 public class SemperHudRenderer {
     private ExperienceWidgetRenderer experienceWidgetRenderer;
+    private HealthWidgetRenderer healthWidgetRenderer;
 
     public SemperHudRenderer() {
         this.experienceWidgetRenderer = new ExperienceWidgetRenderer(MinecraftClient.getInstance());
+        this.healthWidgetRenderer = new HealthWidgetRenderer(MinecraftClient.getInstance());
     }
 
     static int getCentredText(Text text){
@@ -21,17 +21,17 @@ public class SemperHudRenderer {
         this.experienceWidgetRenderer.renderExperienceWidget(matrices);
     }
 
-    public static void renderStatusBars(MatrixStack matrices) {
-        renderHealthBar(matrices);
+    public void renderStatusWidget(MatrixStack matrices) {
+        this.healthWidgetRenderer.renderHealthWidget(matrices);
         renderIcons(matrices);
     }
 
 
-    private static void renderHealthBar(MatrixStack matrices){
+    private void renderHealthWidget(MatrixStack matrices){
 
     }
 
-    private static void renderIcons(MatrixStack matrices){
+    private void renderIcons(MatrixStack matrices){
 
     }
 }

@@ -15,8 +15,8 @@ public class InGameHudMixin {
 
     @Inject(method = "renderStatusBars", at = @At("HEAD"), cancellable = true)
     private void overrideRenderStatusBars(MatrixStack matrices, CallbackInfo ci) {
-        SemperHudRenderer.renderStatusBars(matrices);
-        ci.cancel();
+        SemperHudClient.getInstance().renderStatusWidget(matrices);
+        //ci.cancel();
     }
     @Inject(method = "renderExperienceBar", at = @At("HEAD"), cancellable = true)
     private void overrideRenderExperienceBars(MatrixStack matrices, int x, CallbackInfo ci) {
