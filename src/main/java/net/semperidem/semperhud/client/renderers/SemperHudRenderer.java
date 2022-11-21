@@ -7,10 +7,12 @@ import net.minecraft.text.Text;
 public class SemperHudRenderer {
     private ExperienceWidgetRenderer experienceWidgetRenderer;
     private HealthWidgetRenderer healthWidgetRenderer;
+    private IconsWidgetRenderer iconsWidgetRenderer;
 
     public SemperHudRenderer() {
         this.experienceWidgetRenderer = new ExperienceWidgetRenderer(MinecraftClient.getInstance());
         this.healthWidgetRenderer = new HealthWidgetRenderer(MinecraftClient.getInstance());
+        this.iconsWidgetRenderer = new IconsWidgetRenderer(MinecraftClient.getInstance());
     }
 
     static int getCentredText(Text text){
@@ -23,15 +25,7 @@ public class SemperHudRenderer {
 
     public void renderStatusWidget(MatrixStack matrices) {
         this.healthWidgetRenderer.renderHealthWidget(matrices);
-        renderIcons(matrices);
+        this.iconsWidgetRenderer.renderIconsWidget(matrices);
     }
 
-
-    private void renderHealthWidget(MatrixStack matrices){
-
-    }
-
-    private void renderIcons(MatrixStack matrices){
-
-    }
 }
