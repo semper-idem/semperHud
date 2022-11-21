@@ -37,7 +37,13 @@ public class IconsWidgetRenderer {
 
     public void renderIconsWidget(MatrixStack matrices){
         renderIcon(matrices, 0, String.valueOf(this.client.player.getHungerManager().getFoodLevel()));
+        matrices.push();
+        this.client.player.isSubmergedInWater();
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, client.player.isSubmergedInWater() ?  1.0F : 0.5F);
         renderIcon(matrices, 1, String.valueOf(this.client.player.getAir() / 15));
+        matrices.pop();
         renderIcon(matrices, 2, String.valueOf(this.client.player.getArmor()));
         renderIcon(matrices, 3, String.valueOf(MathHelper.floor(this.client.player.getAttributeValue(EntityAttributes.GENERIC_ARMOR_TOUGHNESS))));
 

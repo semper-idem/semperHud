@@ -117,21 +117,19 @@ public class ExperienceWidgetRenderer {
         renderExperienceInfoContainer(matrices);
         int currentLevelInt = (int)Math.floor(this.animationLevel);
         int nextLevelXp = getNextLevelExperience((int) Math.floor(this.animationLevel));
-        int currentXp = (int) (nextLevelXp * (this.animationLevel - currentLevelInt));
+        int xpLeft = nextLevelXp - (int) (nextLevelXp * (this.animationLevel - currentLevelInt));
 
         String currentLevelString = String.valueOf(currentLevelInt);
-        String currentXpString = String.valueOf(currentXp);
-        String nextXpString = String.valueOf(nextLevelXp);
+        String xpLeftString = String.valueOf(xpLeft);
 
         renderExperienceInfoText(matrices, 1.5f, client.textRenderer, currentLevelString, 6);
-        renderExperienceInfoText(matrices, 1, client.textRenderer, currentXpString, 26);
-        renderExperienceInfoText(matrices, 1, client.textRenderer, nextXpString, 36);
+        renderExperienceInfoText(matrices, 1, client.textRenderer, xpLeftString, 26);
     }
 
 
     private void renderExperienceInfoText(MatrixStack matrices, float scalingFactor, TextRenderer textRenderer, String text, int textY){
         matrices.scale(scalingFactor,scalingFactor,scalingFactor);
-        int x = (int) ((EXP_WIDGET_X + (EXP_INFO_WIDTH/2) + SemperHudRenderer.getCentredText(Text.of(text))) / scalingFactor);
+        int x = (int) ((EXP_WIDGET_X + (EXP_INFO_WIDTH/2) + 20) / scalingFactor) - textRenderer.getWidth(text);
         int y = (int) ((EXP_WIDGET_Y + EXP_BAR_HEIGHT + textY) / scalingFactor);
         DrawableHelper.drawStringWithShadow(
                 matrices,

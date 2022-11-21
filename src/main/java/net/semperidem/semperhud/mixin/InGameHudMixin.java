@@ -1,5 +1,6 @@
 package net.semperidem.semperhud.mixin;
 
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
 import net.semperidem.semperhud.client.SemperHudClient;
@@ -21,6 +22,11 @@ public class InGameHudMixin {
     @Inject(method = "renderExperienceBar", at = @At("HEAD"), cancellable = true)
     private void overrideRenderExperienceBars(MatrixStack matrices, int x, CallbackInfo ci) {
         SemperHudClient.getInstance().renderExperienceWidget(matrices);
+        //ci.cancel();
+    }
+    @Inject(method = "renderHotbar", at = @At("HEAD"))
+    private void overrideRenderHotbar(float tickDelta, MatrixStack matrices, CallbackInfo ci) {
+        SemperHudClient.getInstance().renderHotbar(tickDelta, matrices);
         //ci.cancel();
     }
 }

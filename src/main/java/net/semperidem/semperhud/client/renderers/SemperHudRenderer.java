@@ -8,11 +8,13 @@ public class SemperHudRenderer {
     private ExperienceWidgetRenderer experienceWidgetRenderer;
     private HealthWidgetRenderer healthWidgetRenderer;
     private IconsWidgetRenderer iconsWidgetRenderer;
+    private HotbarRenderer hotbarRenderer;
 
     public SemperHudRenderer() {
         this.experienceWidgetRenderer = new ExperienceWidgetRenderer(MinecraftClient.getInstance());
         this.healthWidgetRenderer = new HealthWidgetRenderer(MinecraftClient.getInstance());
         this.iconsWidgetRenderer = new IconsWidgetRenderer(MinecraftClient.getInstance());
+        this.hotbarRenderer = new HotbarRenderer(MinecraftClient.getInstance());
     }
 
     static int getCentredText(Text text){
@@ -28,4 +30,7 @@ public class SemperHudRenderer {
         this.iconsWidgetRenderer.renderIconsWidget(matrices);
     }
 
+    public void renderHotbar(float tickDetla, MatrixStack matrices) {
+        this.hotbarRenderer.renderHotbar(tickDetla, matrices);
+    }
 }

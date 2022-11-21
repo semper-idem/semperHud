@@ -70,11 +70,11 @@ public class HealthWidgetRenderer {
     }
 
     private void renderHealthInfo(MatrixStack matrices){
-        String hpString = Math.round(animationHealth) + " / " + Math.round(maxHealth);
+        String hpString = Math.round(animationHealth) + "/" + Math.round(maxHealth);
         int hpStringOffset = client.textRenderer.getWidth(hpString);
         float scale = 0.5f;
         matrices.scale(scale, scale, scale);
-        DrawableHelper.drawStringWithShadow(matrices, client.textRenderer, hpString, (int)((HP_WIDGET_X + HP_WIDGET_WIDTH - 8) * (1 / scale)) - hpStringOffset, (int)((HP_WIDGET_Y + 2)* (1 / scale)), 16777215);
+        DrawableHelper.drawStringWithShadow(matrices, client.textRenderer, hpString, (int)((HP_WIDGET_X + HP_WIDGET_WIDTH - 4) * (1 / scale)) - hpStringOffset, (int)((HP_WIDGET_Y + 2)* (1 / scale)), 16777215);
         }
 
     private float getHPBarPercent(float health){
