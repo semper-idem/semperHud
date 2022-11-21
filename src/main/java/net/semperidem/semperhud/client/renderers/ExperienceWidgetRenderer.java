@@ -16,10 +16,10 @@ public class ExperienceWidgetRenderer {
     private static final int EXP_INFO_HEIGHT = 48;
     private static final int EXP_INFO_WIDTH = 48;
 
-    private static final int EXP_WIDGET_X = 1;
-    private static final int EXP_WIDGET_Y = 1;
+    private static final int EXP_WIDGET_X = 0;
+    private static final int EXP_WIDGET_Y = 0;
 
-    private static final long ANIMATION_LENGTH = 2000;
+    private static final long ANIMATION_DURATION = 2000;
 
     private static final int TEXT_COLOR = 16768512;
 
@@ -33,13 +33,13 @@ public class ExperienceWidgetRenderer {
 
     private long animationStartTS = 0;
     private float startLevel = 0;
-    private float currentLevel = 0;
+    private float animationLevel = 0;
     private float animationTargetLevel = 0;
 
     public ExperienceWidgetRenderer(MinecraftClient client) {
         this.client = client;
         this.startLevel = getPlayerLevel();
-        this.currentLevel = this.startLevel;
+        this.animationLevel = this.startLevel;
         this.animationTargetLevel = this.startLevel;
     }
 
@@ -47,7 +47,7 @@ public class ExperienceWidgetRenderer {
         long animationCurrentTS = System.currentTimeMillis();
         triggerAnimation(animationCurrentTS);
 
-        this.currentLevel = getCurrentAnimationLevel(animationCurrentTS);
+        this.animationLevel = getCurrentAnimationLevel(animationCurrentTS);
 
         matrices.push();
         renderExperienceBar(matrices);
@@ -56,7 +56,7 @@ public class ExperienceWidgetRenderer {
     }
 
     private void renderExperienceBar(MatrixStack matrices) {
-        float animationCurrentProgress = getLevelProgress(this.currentLevel);
+        float animationCurrentProgress = getLevelProgress(this.animationLevel);
         float animationTargetProgress = getAnimationTargetProgress();
 
         drawExpBar(matrices, 1, EXP_BAR_EMPTY);
@@ -68,7 +68,7 @@ public class ExperienceWidgetRenderer {
         if (this.animationTargetLevel != getPlayerLevel()) {
             this.animationTargetLevel = getPlayerLevel();
             this.animationStartTS = animationCurrentTS;
-            this.startLevel = currentLevel;
+            this.startLevel = this.animationLevel;
         }
     }
 
@@ -89,7 +89,7 @@ public class ExperienceWidgetRenderer {
     }
 
     private float getAnimationTargetProgress() {
-        return Math.floor(this.animationTargetLevel) - Math.floor(this.currentLevel) > 0 ?
+        return Math.floor(this.animationTargetLevel) - Math.floor(this.animationLevel) > 0 ?
             1 : getLevelProgress(this.animationTargetLevel);
     }
 
@@ -109,15 +109,15 @@ public class ExperienceWidgetRenderer {
     }
 
     private float getAnimationPercent(long animationCurrentTS){
-        boolean animationIsDone = animationCurrentTS - this.animationStartTS > ANIMATION_LENGTH;
-        return  animationIsDone ? 1 : (animationCurrentTS -  this.animationStartTS)  / (ANIMATION_LENGTH * 1.0f);
+        boolean animationIsDone = animationCurrentTS - this.animationStartTS > ANIMATION_DURATION;
+        return  animationIsDone ? 1 : (animationCurrentTS -  this.animationStartTS)  / (ANIMATION_DURATION * 1.0f);
     }
 
     private void renderExperienceInfo(MatrixStack matrices) {
         renderExperienceInfoContainer(matrices);
-        int currentLevelInt = (int)Math.floor(this.currentLevel);
-        int nextLevelXp = getNextLevelExperience((int) Math.floor(this.currentLevel));
-        int currentXp = (int) (nextLevelXp * (this.currentLevel - currentLevelInt));
+        int currentLevelInt = (int)Math.floor(this.animationLevel);
+        int nextLevelXp = getNextLevelExperience((int) Math.floor(this.animationLevel));
+        int currentXp = (int) (nextLevelXp * (this.animationLevel - currentLevelInt));
 
         String currentLevelString = String.valueOf(currentLevelInt);
         String currentXpString = String.valueOf(currentXp);
