@@ -19,7 +19,7 @@ public class IconsWidgetRenderer {
     private static final int DETAIL_HEIGHT = 32;
 
     private static final int ICONS_WIDGET_X = 55;
-    private static final int ICONS_WIDGET_Y = 15;
+    private static final int ICONS_WIDGET_Y = 21;
 
     private static final String ICONS_STRING = "textures/gui/icons/";
 
@@ -52,7 +52,7 @@ public class IconsWidgetRenderer {
             DrawableHelper.drawTexture(
                     matrices,
                     ICONS_WIDGET_X + 34 * i,
-                    ICONS_WIDGET_Y + 5,
+                    ICONS_WIDGET_Y + 4,
                     0,
                     0,
                     0,

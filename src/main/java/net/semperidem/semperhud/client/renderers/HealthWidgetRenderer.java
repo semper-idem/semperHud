@@ -9,18 +9,18 @@ import net.minecraft.util.Identifier;
 import net.semperidem.semperhud.client.SemperHudClient;
 
 public class HealthWidgetRenderer {
-    private static final int HP_BAR_WIDTH = 128;
-    private static final int HP_WIDGET_WIDTH = 160;
-    private static final int HP_WIDGET_HEIGHT = 8;
+    private static final int HP_WIDGET_WIDTH = 192;
+    private static final int HP_WIDGET_HEIGHT = 16;
 
-    private static final int HP_WIDGET_X = 50;
-    private static final int HP_WIDGET_Y = 6;
+    private static final int HP_WIDGET_X = 48;
+    private static final int HP_WIDGET_Y = 5;
 
     private static final long ANIMATION_DURATION = 8000;
 
     private static final String HP_BAR_STRING = "textures/gui/health/";
 
     private static final Identifier HP_BAR_EMPTY = new Identifier(SemperHudClient.getModId(), HP_BAR_STRING + "hp-bar-empty.png");
+    private static final Identifier HP_BAR_BG = new Identifier(SemperHudClient.getModId(), HP_BAR_STRING + "hp-bar-bg.png");
     private static final Identifier HP_BAR_ABSO = new Identifier(SemperHudClient.getModId(), HP_BAR_STRING + "hp-bar-abso.png");
     private static final Identifier HP_BAR_DAMAGED = new Identifier(SemperHudClient.getModId(), HP_BAR_STRING + "hp-bar-damaged.png");
     private static final Identifier HP_BAR_POISON = new Identifier(SemperHudClient.getModId(), HP_BAR_STRING + "hp-bar-poison.png");
@@ -52,17 +52,17 @@ public class HealthWidgetRenderer {
         this.animationHealth = getCurrentAnimationHealth(animationCurrentTS);
 
         matrices.push();
-        drawHPBar(matrices, 1, HP_BAR_EMPTY,true);
-        drawHPBar(matrices, getHPBarPercent(this.animationHealth), HP_BAR_DAMAGED,false);
-        drawHPBar(matrices,getHPBarPercent(this.client.player.getHealth()), HP_BAR_FULL, false);
+        drawHPContainer(matrices);
+        //drawHPBar(matrices, getHPBarPercent(this.animationHealth), HP_BAR_DAMAGED,false);
+        drawHPBar(matrices,getHPBarPercent(this.client.player.getHealth()), HP_BAR_FULL);
         if (this.client.player.hasStatusEffect(StatusEffects.ABSORPTION)) {
-            drawHPBar(matrices,getHPBarPercent(this.client.player.getAbsorptionAmount()), HP_BAR_ABSO, false);
+            drawHPBar(matrices,getHPBarPercent(this.client.player.getAbsorptionAmount()), HP_BAR_ABSO);
         }
         if (this.client.player.hasStatusEffect(StatusEffects.POISON)) {
-            drawHPBar(matrices,getHPBarPercent(this.client.player.getHealth()), HP_BAR_POISON, false);
+            drawHPBar(matrices,getHPBarPercent(this.client.player.getHealth()), HP_BAR_POISON);
         }
         if (this.client.player.hasStatusEffect(StatusEffects.WITHER)) {
-            drawHPBar(matrices,getHPBarPercent(this.client.player.getHealth()), HP_BAR_WITHER, false);
+            drawHPBar(matrices,getHPBarPercent(this.client.player.getHealth()), HP_BAR_WITHER);
         }
         renderHealthInfo(matrices);
         matrices.pop();
@@ -70,12 +70,10 @@ public class HealthWidgetRenderer {
     }
 
     private void renderHealthInfo(MatrixStack matrices){
-        String hpString = Math.round(animationHealth) + "/" + Math.round(maxHealth);
+        String hpString = String.format(this.animationTargetHealth >= 100 ? "%.0f" :"%.1f", this.animationTargetHealth);
         int hpStringOffset = client.textRenderer.getWidth(hpString);
-        float scale = 0.5f;
-        matrices.scale(scale, scale, scale);
-        DrawableHelper.drawStringWithShadow(matrices, client.textRenderer, hpString, (int)((HP_WIDGET_X + HP_WIDGET_WIDTH - 4) * (1 / scale)) - hpStringOffset, (int)((HP_WIDGET_Y + 2)* (1 / scale)), 16777215);
-        }
+        DrawableHelper.drawStringWithShadow(matrices, client.textRenderer, hpString, (HP_WIDGET_X + HP_WIDGET_WIDTH - 5) - hpStringOffset, (HP_WIDGET_Y + 4), 16777215);
+    }
 
     private float getHPBarPercent(float health){
         return health / this.maxHealth;
@@ -101,9 +99,8 @@ public class HealthWidgetRenderer {
         }
     }
 
-
-    private void drawHPBar(MatrixStack matrices, float barProgress, Identifier texture, boolean isContainer) {
-        RenderSystem.setShaderTexture(0, texture);
+    private void drawHPContainer(MatrixStack matrices) {
+        RenderSystem.setShaderTexture(0, HP_BAR_BG);
         DrawableHelper.drawTexture(
                 matrices,
                 HP_WIDGET_X,
@@ -111,9 +108,24 @@ public class HealthWidgetRenderer {
                 0,
                 0,
                 0,
-                isContainer ? HP_WIDGET_WIDTH : (int)(barProgress * HP_BAR_WIDTH),
+                HP_WIDGET_WIDTH,
                 HP_WIDGET_HEIGHT,
-                isContainer ? HP_WIDGET_WIDTH : HP_BAR_WIDTH,
+                HP_WIDGET_WIDTH,
+                HP_WIDGET_HEIGHT
+        );
+    }
+    private void drawHPBar(MatrixStack matrices, float barProgress, Identifier texture) {
+        RenderSystem.setShaderTexture(0, texture);
+        DrawableHelper.drawTexture(
+                matrices,
+                HP_WIDGET_X + 2,
+                HP_WIDGET_Y,
+                0,
+                2,
+                0,
+                (int)(barProgress * (HP_WIDGET_WIDTH - 32)),
+                HP_WIDGET_HEIGHT,
+                HP_WIDGET_WIDTH,
                 HP_WIDGET_HEIGHT
         );
     }

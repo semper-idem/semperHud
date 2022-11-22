@@ -8,6 +8,8 @@ import net.semperidem.semperhud.client.renderers.SemperHudRenderer;
 
 @Environment(EnvType.CLIENT)
 public class SemperHudClient implements ClientModInitializer {
+    public static boolean isHudRendering;
+    public static float alpha = 0.5f;
 
     private static SemperHudRenderer instance;
 
@@ -17,6 +19,14 @@ public class SemperHudClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
 
+    }
+
+    public static int modifyArgb(int argb){
+        int oldAlpha = argb >> 24;
+        if ((oldAlpha & 0xFC) == 0) {
+            oldAlpha = 0xFF;
+        }
+        return Math.round(alpha * oldAlpha) << 24 | (argb & 0xFFFFFF);
     }
 
     public static SemperHudRenderer getInstance(){

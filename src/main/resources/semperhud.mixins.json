@@ -4,9 +4,22 @@
   "package": "net.semperidem.semperhud.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "sodium.QuadVertexSinkMixin",
+    "sodium.QuadVertexWriterMixin"
   ],
   "client": [
-    "InGameHudMixin"
+    "InGameHudMixin",
+    "render.BannerBlockEntityRendererMixin",
+    "render.BedBlockEntityRendererMixin",
+    "render.ChestBlockEntityRendererMixin",
+    "render.ConduitBlockEntityRendererMixin",
+    "render.ItemRendererMixin",
+    "render.ModelPartMixin",
+    "render.RenderLayersMixin",
+    "render.ShulkerBoxBlockEntityRendererMixin",
+    "render.SkullBlockEntityRendererMixin",
+    "render.TextRendererMixin",
+    "render.VertexConsumerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

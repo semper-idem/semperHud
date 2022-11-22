@@ -1,13 +1,27 @@
 package net.semperidem.semperhud.client.renderers;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.OverlayTexture;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.Vector3d;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.crash.CrashException;
+import net.minecraft.util.crash.CrashReport;
+import net.minecraft.util.crash.CrashReportSection;
+import net.minecraft.util.math.Vec3f;
+import net.minecraft.world.World;
 import net.semperidem.semperhud.client.SemperHudClient;
 
 import static net.minecraft.client.gui.widget.ClickableWidget.WIDGETS_TEXTURE;
@@ -24,6 +38,11 @@ public class HotbarRenderer {
     }
 
     private void renderHotbarItem(int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed) {
+
+        RenderSystem.enableBlend();
+        RenderSystem.setShaderColor(1.0F,1.0F,1.0F,SemperHudClient.alpha);
+        RenderSystem.applyModelViewMatrix();
+
         if (!stack.isEmpty()) {
             MatrixStack matrixStack = RenderSystem.getModelViewStack();
             float f = (float)stack.getBobbingAnimationTime() - tickDelta;
@@ -35,28 +54,30 @@ public class HotbarRenderer {
                 matrixStack.translate((double)(-(x + 8)), (double)(-(y + 12)), 0.0);
                 RenderSystem.applyModelViewMatrix();
             }
-
-            this.client.getItemRenderer().renderInGuiWithOverrides(player, stack, x, y, seed);
+            MinecraftClient.getInstance().getItemRenderer().renderInGuiWithOverrides(player, stack, x, y, seed);
             RenderSystem.setShader(GameRenderer::getPositionColorShader);
             if (f > 0.0F) {
                 matrixStack.pop();
                 RenderSystem.applyModelViewMatrix();
             }
 
-            this.client.getItemRenderer().renderGuiItemOverlay(this.client.textRenderer, stack, x, y);
+            //MinecraftClient.getInstance().getItemRenderer().renderGuiItemOverlay(this.client.textRenderer, stack, x, y);
         }
     }
+       // this.renderItem(stack, ModelTransformation.Mode.GUI, false,matrixStack2, immediate, 15728880,OverlayTexture.DEFAULT_UV, model);
+    //public void renderItem(ItemStack stack, ModelTransformation.Mode renderMode, boolean leftHanded, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, BakedModel model) {
 
-    public void renderHotbar(float tickDelta, MatrixStack matrices) {
+        public void renderHotbar(float tickDelta, MatrixStack matrices) {
         PlayerEntity player = this.client.player;
         if (player != null) {
+            matrices.push();
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, SemperHudClient.alpha);
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0, WIDGET);
             int y0 = this.client.getWindow().getScaledHeight() / 2 - 91;
-            DrawableHelper.drawTexture(matrices, 0, y0, 0,0,22,182 ,256,256);
+            //DrawableHelper.drawTexture(matrices, 0, y0, 0,0,22,182 ,256,256);
             DrawableHelper.drawTexture(matrices, 1, y0 - 1 + player.getInventory().selectedSlot * 20, 23,0,22,22 ,256,256);
             for(int n = 0; n < 9; ++n) {
                 int x = 3;
@@ -64,7 +85,10 @@ public class HotbarRenderer {
                 this.renderHotbarItem(x, y, tickDelta, player, (ItemStack)player.getInventory().main.get(n), n);
             }
 
+            matrices.pop();
         }
+
+        //this.client.options.getGuiScale().setValue(beforeScale);
 //        PlayerEntity playerEntity = this.client.player;
 //        if (playerEntity != null) {
 //            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);

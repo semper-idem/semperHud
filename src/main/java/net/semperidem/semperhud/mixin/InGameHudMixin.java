@@ -13,7 +13,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(InGameHud.class)
 public class InGameHudMixin {
 
-
     @Inject(method = "renderStatusBars", at = @At("HEAD"), cancellable = true)
     private void overrideRenderStatusBars(MatrixStack matrices, CallbackInfo ci) {
         SemperHudClient.getInstance().renderStatusWidget(matrices);
@@ -24,9 +23,11 @@ public class InGameHudMixin {
         SemperHudClient.getInstance().renderExperienceWidget(matrices);
         //ci.cancel();
     }
-    @Inject(method = "renderHotbar", at = @At("HEAD"))
+    @Inject(method = "renderHotbar", at = @At("HEAD"), cancellable = true)
     private void overrideRenderHotbar(float tickDelta, MatrixStack matrices, CallbackInfo ci) {
+        SemperHudClient.isHudRendering = true;
         SemperHudClient.getInstance().renderHotbar(tickDelta, matrices);
-        //ci.cancel();
+        SemperHudClient.isHudRendering = false;
+        ci.cancel();
     }
 }
