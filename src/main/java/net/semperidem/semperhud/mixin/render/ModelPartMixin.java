@@ -10,6 +10,6 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 public class ModelPartMixin {
     @ModifyVariable(method="render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;IIFFFF)V", at=@At("HEAD"), ordinal = 3, argsOnly = true)
     public float autoHud$render(float alpha) {
-        return SemperHudClient.isHudRendering ? SemperHudClient.alpha * alpha : alpha;
+        return SemperHudClient.isHudAlpha ? SemperHudClient.alpha * alpha : alpha;
     }
 }

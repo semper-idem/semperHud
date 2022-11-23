@@ -18,7 +18,7 @@ public class ChestBlockEntityRendererMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/SpriteIdentifier;getVertexConsumer(Lnet/minecraft/client/render/VertexConsumerProvider;Ljava/util/function/Function;)Lnet/minecraft/client/render/VertexConsumer;")
     )
     private Function<Identifier, RenderLayer> semperHud$getVertexConsumer(Function<Identifier, RenderLayer> layerFactory) {
-        return SemperHudClient.isHudRendering ? RenderLayer::getEntityTranslucentCull : layerFactory;
+        return SemperHudClient.isHudAlpha ? RenderLayer::getEntityTranslucentCull : layerFactory;
     }
 
 }

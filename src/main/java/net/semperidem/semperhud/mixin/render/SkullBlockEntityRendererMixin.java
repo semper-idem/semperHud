@@ -12,10 +12,10 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class SkullBlockEntityRendererMixin {
     @Redirect(method = "getRenderLayer", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/render/RenderLayer;getEntityCutoutNoCull(Lnet/minecraft/util/Identifier;)Lnet/minecraft/client/render/RenderLayer;"))
     private static RenderLayer semperHud$getEntityCutoutNoCull(Identifier texture) {
-        return SemperHudClient.isHudRendering ? RenderLayer.getEntityTranslucent(texture) : RenderLayer.getEntityCutoutNoCull(texture);
+        return SemperHudClient.isHudAlpha ? RenderLayer.getEntityTranslucent(texture) : RenderLayer.getEntityCutoutNoCull(texture);
     }
     @Redirect(method = "getRenderLayer", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/render/RenderLayer;getEntityCutoutNoCullZOffset(Lnet/minecraft/util/Identifier;)Lnet/minecraft/client/render/RenderLayer;"))
     private static RenderLayer semperHud$getEntityCutoutNoCullZOffset(Identifier texture) {
-        return SemperHudClient.isHudRendering ? RenderLayer.getEntityTranslucent(texture) : RenderLayer.getEntityCutoutNoCullZOffset(texture);
+        return SemperHudClient.isHudAlpha ? RenderLayer.getEntityTranslucent(texture) : RenderLayer.getEntityCutoutNoCullZOffset(texture);
     }
 }

@@ -13,6 +13,6 @@ public class RenderLayersMixin {
     // BlockItem transparency support
     @Redirect(method="getEntityBlockLayer", at=@At(value = "INVOKE", target = "Lnet/minecraft/client/render/TexturedRenderLayers;getEntityCutout()Lnet/minecraft/client/render/RenderLayer;"))
     private static RenderLayer semperHud$getEntityCutout() {
-        return (SemperHudClient.isHudRendering ? TexturedRenderLayers.getItemEntityTranslucentCull() : TexturedRenderLayers.getEntityCutout());
+        return (SemperHudClient.isHudAlpha ? TexturedRenderLayers.getItemEntityTranslucentCull() : TexturedRenderLayers.getEntityCutout());
     }
 }

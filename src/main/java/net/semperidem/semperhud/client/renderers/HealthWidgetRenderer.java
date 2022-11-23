@@ -53,7 +53,7 @@ public class HealthWidgetRenderer {
 
         matrices.push();
         drawHPContainer(matrices);
-        //drawHPBar(matrices, getHPBarPercent(this.animationHealth), HP_BAR_DAMAGED,false);
+        drawHPBar(matrices, getHPBarPercent(this.animationHealth), HP_BAR_DAMAGED);
         drawHPBar(matrices,getHPBarPercent(this.client.player.getHealth()), HP_BAR_FULL);
         if (this.client.player.hasStatusEffect(StatusEffects.ABSORPTION)) {
             drawHPBar(matrices,getHPBarPercent(this.client.player.getAbsorptionAmount()), HP_BAR_ABSO);
@@ -72,7 +72,7 @@ public class HealthWidgetRenderer {
     private void renderHealthInfo(MatrixStack matrices){
         String hpString = String.format(this.animationTargetHealth >= 100 ? "%.0f" :"%.1f", this.animationTargetHealth);
         int hpStringOffset = client.textRenderer.getWidth(hpString);
-        DrawableHelper.drawStringWithShadow(matrices, client.textRenderer, hpString, (HP_WIDGET_X + HP_WIDGET_WIDTH - 5) - hpStringOffset, (HP_WIDGET_Y + 4), 16777215);
+        DrawableHelper.drawStringWithShadow(matrices, client.textRenderer, hpString, 48 + 27 - hpStringOffset, (HP_WIDGET_Y + 4), 16777215);
     }
 
     private float getHPBarPercent(float health){
@@ -118,10 +118,10 @@ public class HealthWidgetRenderer {
         RenderSystem.setShaderTexture(0, texture);
         DrawableHelper.drawTexture(
                 matrices,
-                HP_WIDGET_X + 2,
+                HP_WIDGET_X + 32,
                 HP_WIDGET_Y,
                 0,
-                2,
+                32,
                 0,
                 (int)(barProgress * (HP_WIDGET_WIDTH - 32)),
                 HP_WIDGET_HEIGHT,

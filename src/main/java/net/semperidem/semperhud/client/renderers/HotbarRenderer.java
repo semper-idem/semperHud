@@ -29,12 +29,21 @@ import static net.minecraft.client.gui.widget.ClickableWidget.WIDGETS_TEXTURE;
 public class HotbarRenderer {
 
     private static final Identifier WIDGET = new Identifier(SemperHudClient.getModId(),  "textures/gui/hotbar/widgets.png");
+    private static final Identifier WIDGET_DARK = new Identifier(SemperHudClient.getModId(),  "textures/gui/hotbar/widgets_dark.png");
+    private static final Identifier WIDGET_DARK_NUMBERED = new Identifier(SemperHudClient.getModId(),  "textures/gui/hotbar/widgets_dark_numbered.png");
 
     private MinecraftClient client;
+
+
+    private long selectedSlotChangedTS;
+    private int lastRenderSelectedSlot;
+    private final long ANIMATION_TIME = 5000;
+    private final long ANIMATION_WAIT = 5000;
 
     public HotbarRenderer(MinecraftClient client) {
         assert client.player != null;
         this.client = client;
+        lastRenderSelectedSlot = this.client.player.getInventory().selectedSlot;
     }
 
     private void renderHotbarItem(int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed) {
@@ -61,7 +70,7 @@ public class HotbarRenderer {
                 RenderSystem.applyModelViewMatrix();
             }
 
-            //MinecraftClient.getInstance().getItemRenderer().renderGuiItemOverlay(this.client.textRenderer, stack, x, y);
+            MinecraftClient.getInstance().getItemRenderer().renderGuiItemOverlay(this.client.textRenderer, stack, x, y);
         }
     }
        // this.renderItem(stack, ModelTransformation.Mode.GUI, false,matrixStack2, immediate, 15728880,OverlayTexture.DEFAULT_UV, model);
@@ -70,19 +79,29 @@ public class HotbarRenderer {
         public void renderHotbar(float tickDelta, MatrixStack matrices) {
         PlayerEntity player = this.client.player;
         if (player != null) {
+            long ts = System.currentTimeMillis();
+            if (lastRenderSelectedSlot != this.client.player.getInventory().selectedSlot) {
+                selectedSlotChangedTS = ts;
+                lastRenderSelectedSlot = this.client.player.getInventory().selectedSlot;
+            }
+
+            long timeSinceSelectedSlotChange = ts - selectedSlotChangedTS;
+            SemperHudClient.alpha = timeSinceSelectedSlotChange < ANIMATION_WAIT ? 1 :
+                    timeSinceSelectedSlotChange < ANIMATION_WAIT + ANIMATION_TIME ?
+                           0.5f + (0.5f * ((ANIMATION_TIME + ANIMATION_WAIT - timeSinceSelectedSlotChange) / (1f *(ANIMATION_TIME + ANIMATION_WAIT))) ) : 0.5F;
             matrices.push();
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, SemperHudClient.alpha);
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
-            RenderSystem.setShaderTexture(0, WIDGET);
-            int y0 = this.client.getWindow().getScaledHeight() / 2 - 91;
-            //DrawableHelper.drawTexture(matrices, 0, y0, 0,0,22,182 ,256,256);
-            DrawableHelper.drawTexture(matrices, 1, y0 - 1 + player.getInventory().selectedSlot * 20, 23,0,22,22 ,256,256);
+            RenderSystem.setShaderTexture(0, WIDGET_DARK_NUMBERED);
+            int y0 = (int) ((this.client.getWindow().getScaledHeight() / (2)  - 91));
+            DrawableHelper.drawTexture(matrices, 1,  (y0), 0,0,22,182 ,256,256);
+            DrawableHelper.drawTexture(matrices, 1, (y0 - 1 + player.getInventory().selectedSlot * 20), 23,0,22,22 ,256,256);
             for(int n = 0; n < 9; ++n) {
                 int x = 3;
                 int y = y0 + n * 20 + 3;
-                this.renderHotbarItem(x, y, tickDelta, player, (ItemStack)player.getInventory().main.get(n), n);
+                this.renderHotbarItem(x, y, tickDelta, player, player.getInventory().main.get(n), n);
             }
 
             matrices.pop();

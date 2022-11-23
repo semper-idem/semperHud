@@ -17,7 +17,7 @@ public class BannerBlockEntityRendererMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/SpriteIdentifier;getVertexConsumer(Lnet/minecraft/client/render/VertexConsumerProvider;Ljava/util/function/Function;)Lnet/minecraft/client/render/VertexConsumer;")
     )
     private Function<Identifier, RenderLayer> semperHud$getVertexConsumer(Function<Identifier, RenderLayer> layerFactory) {
-        return SemperHudClient.isHudRendering ? RenderLayer::getEntityTranslucent : layerFactory;
+        return SemperHudClient.isHudAlpha ? RenderLayer::getEntityTranslucent : layerFactory;
     }
 
     @ModifyArg(
@@ -25,6 +25,6 @@ public class BannerBlockEntityRendererMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/SpriteIdentifier;getVertexConsumer(Lnet/minecraft/client/render/VertexConsumerProvider;Ljava/util/function/Function;Z)Lnet/minecraft/client/render/VertexConsumer;")
     )
     private static Function<Identifier, RenderLayer> semperHud$getRenderLayer(Function<Identifier, RenderLayer> layerFactory) {
-        return SemperHudClient.isHudRendering ? RenderLayer::getEntityTranslucent : layerFactory;
+        return SemperHudClient.isHudAlpha ? RenderLayer::getEntityTranslucent : layerFactory;
     }
 }

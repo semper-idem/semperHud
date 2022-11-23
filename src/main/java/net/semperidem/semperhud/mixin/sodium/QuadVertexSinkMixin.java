@@ -10,6 +10,6 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 public interface QuadVertexSinkMixin {
 	@ModifyVariable(method = "writeQuad(Lnet/minecraft/client/util/math/MatrixStack$Entry;FFFIFFIII)V", at=@At("HEAD"), ordinal = 0, argsOnly = true)
 	default int autoHud$alpha(int color) {
-		return (SemperHudClient.isHudRendering ? SemperHudClient.modifyArgb(color) : color);
+		return (SemperHudClient.isHudAlpha ? SemperHudClient.modifyArgb(color) : color);
 	}
 }

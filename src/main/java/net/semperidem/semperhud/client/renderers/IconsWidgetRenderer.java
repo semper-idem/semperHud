@@ -18,8 +18,8 @@ public class IconsWidgetRenderer {
     private static final int DETAIL_WIDTH = 64;
     private static final int DETAIL_HEIGHT = 32;
 
-    private static final int ICONS_WIDGET_X = 55;
-    private static final int ICONS_WIDGET_Y = 21;
+    private static final int ICONS_WIDGET_X = 92;
+    private static final int ICONS_WIDGET_Y = 18;
 
     private static final String ICONS_STRING = "textures/gui/icons/";
 

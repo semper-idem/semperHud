@@ -13,7 +13,7 @@ public class QuadVertexWriterMixin {
 
 	@ModifyVariable(method="writeQuad", at=@At("HEAD"), ordinal = 0, argsOnly = true)
 	int semperHud$writeQuadTransparency(int color) {
-		if (SemperHudClient.isHudRendering) {
+		if (SemperHudClient.isHudAlpha) {
 			return SemperHudClient.modifyArgb(color);
 		}
 		return color;
