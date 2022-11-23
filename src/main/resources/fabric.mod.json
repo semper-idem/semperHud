@@ -21,5 +21,16 @@
     "fabricloader": ">=0.14.10",
     "fabric": "*",
     "minecraft": "1.19.2"
+  },
+  "custom": {
+    "modmenu": {
+      "parent": {
+        "id": "example-api",
+        "name": "Example API",
+        "description": "Modular example library",
+        "icon": "asse",
+        "badges": [ "library" ]
+      }
+    }
   }
 }
