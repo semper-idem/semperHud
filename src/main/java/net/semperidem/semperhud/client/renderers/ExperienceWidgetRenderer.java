@@ -2,24 +2,25 @@ package net.semperidem.semperhud.client.renderers;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.semperidem.semperhud.client.SemperHudClient;
+import net.semperidem.semperhud.client.SemperHudHelper;
 
 public class ExperienceWidgetRenderer {
-    private static final int EXP_BAR_HEIGHT = 5;
-    private static final int EXP_BAR_WIDTH = 256;
+    public static final int EXP_BAR_HEIGHT = 5;
+    public static final int EXP_BAR_WIDTH = 256;
 
-    private static final int EXP_INFO_HEIGHT = 48;
-    private static final int EXP_INFO_WIDTH = 48;
+    public static final int EXP_INFO_HEIGHT = 48;
+    public static final int EXP_INFO_WIDTH = 48;
 
-    private static final int EXP_WIDGET_X = 0;
-    private static final int EXP_WIDGET_Y = 0;
+    public static final int EXP_WIDGET_X = 0;
+    public static final int EXP_WIDGET_Y = 0;
 
-    private static final long ANIMATION_DURATION = 2000;
+    //Move to config
+    public static long ANIMATION_DURATION = 2000;
 
     private static final int TEXT_COLOR = 16768512;
 
@@ -29,18 +30,18 @@ public class ExperienceWidgetRenderer {
     private static final Identifier EXP_BAR_GAIN = new Identifier(SemperHudClient.getModId(), EXP_STRING + "exp-bar-gain.png");
     private static final Identifier EXP_INFO = new Identifier(SemperHudClient.getModId(), EXP_STRING + "exp-info.png");
 
-    private MinecraftClient client;
+    private ClientPlayerEntity clientPlayer;
 
     private long animationStartTS = 0;
-    private float startLevel = 0;
+    private float animationStartLevel = 0;
     private float animationLevel = 0;
     private float animationTargetLevel = 0;
 
     public ExperienceWidgetRenderer(MinecraftClient client) {
-        this.client = client;
-        this.startLevel = getPlayerLevel();
-        this.animationLevel = this.startLevel;
-        this.animationTargetLevel = this.startLevel;
+        this.clientPlayer = client.player;
+        this.animationStartLevel = getPlayerLevel();
+        this.animationLevel = this.animationStartLevel;
+        this.animationTargetLevel = this.animationStartLevel;
     }
 
     public void renderExperienceWidget(MatrixStack matrices) {
@@ -66,9 +67,9 @@ public class ExperienceWidgetRenderer {
 
     private void triggerAnimation(long animationCurrentTS) {
         if (this.animationTargetLevel != getPlayerLevel()) {
-            this.animationTargetLevel = getPlayerLevel();
             this.animationStartTS = animationCurrentTS;
-            this.startLevel = this.animationLevel;
+            this.animationStartLevel = this.animationLevel;
+            this.animationTargetLevel = getPlayerLevel();
         }
     }
 
@@ -98,14 +99,11 @@ public class ExperienceWidgetRenderer {
     }
 
     private float getCurrentAnimationLevel(long animationCurrentTS){
-        return this.startLevel + ((this.animationTargetLevel - startLevel) * getAnimationPercent(animationCurrentTS));
+        return this.animationStartLevel + ((this.animationTargetLevel - animationStartLevel) * getAnimationPercent(animationCurrentTS));
     }
 
     private float getPlayerLevel(){
-        if (this.client.player != null) {
-            return this.client.player.experienceLevel + this.client.player.experienceProgress;
-        }
-        return 0;
+            return this.clientPlayer.experienceLevel + this.clientPlayer.experienceProgress;
     }
 
     private float getAnimationPercent(long animationCurrentTS){
@@ -115,32 +113,16 @@ public class ExperienceWidgetRenderer {
 
     private void renderExperienceInfo(MatrixStack matrices) {
         renderExperienceInfoContainer(matrices);
-        int currentLevelInt = (int)Math.floor(this.animationLevel);
-        int nextLevelXp = getNextLevelExperience((int) Math.floor(this.animationLevel));
-        int xpLeft = nextLevelXp - (int) (nextLevelXp * (this.animationLevel - currentLevelInt));
+        int currentLevel = (int)Math.floor(this.animationLevel);
+        int currentExpToLevel = (int)((Math.ceil(animationLevel) - animationLevel) * (getNextLevelExperience((int) Math.floor(animationLevel))));
 
-        String currentLevelString = String.valueOf(currentLevelInt);
-        String xpLeftString = String.valueOf(xpLeft);
-
-        renderExperienceInfoText(matrices, 1.5f, client.textRenderer, currentLevelString, 6);
-        renderExperienceInfoText(matrices, 1, client.textRenderer, xpLeftString, 26);
+        int textX = EXP_WIDGET_X + EXP_INFO_WIDTH - 4;
+        int textY = EXP_WIDGET_Y + EXP_BAR_HEIGHT + 6;
+        SemperHudHelper.drawTextWithShadow(matrices, String.valueOf(currentLevel), textX, textY, 1.5f, TEXT_COLOR, 2);
+        SemperHudHelper.drawTextWithShadow(matrices, String.valueOf(currentExpToLevel), textX, textY + 20, 1f, TEXT_COLOR, 2);
     }
 
 
-    private void renderExperienceInfoText(MatrixStack matrices, float scalingFactor, TextRenderer textRenderer, String text, int textY){
-        matrices.scale(scalingFactor,scalingFactor,scalingFactor);
-        int x = (int) ((EXP_WIDGET_X + (EXP_INFO_WIDTH/2) + 20) / scalingFactor) - textRenderer.getWidth(text);
-        int y = (int) ((EXP_WIDGET_Y + EXP_BAR_HEIGHT + textY) / scalingFactor);
-        DrawableHelper.drawStringWithShadow(
-                matrices,
-                textRenderer,
-                text,
-                x,
-                y,
-                TEXT_COLOR
-        );
-        matrices.scale(1 / scalingFactor,1 / scalingFactor, 1 / scalingFactor);
-    }
 
     private void renderExperienceInfoContainer(MatrixStack matrices) {
         RenderSystem.setShaderTexture(0, EXP_INFO);
@@ -157,7 +139,6 @@ public class ExperienceWidgetRenderer {
                 EXP_INFO_HEIGHT
         );
     }
-
 
     private int getNextLevelExperience(int currentLevel) {
         if (currentLevel >= 30) {
