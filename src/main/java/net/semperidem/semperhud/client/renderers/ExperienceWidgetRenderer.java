@@ -19,16 +19,17 @@ public class ExperienceWidgetRenderer {
     public static final int EXP_WIDGET_X = 0;
     public static final int EXP_WIDGET_Y = 0;
 
+    private static final String MOD_ID = SemperHudClient.getModId();
     //Move to config
     public static long ANIMATION_DURATION = 2000;
 
-    private static final int TEXT_COLOR = 16768512;
+    private static final int INFO_COLOR = 16768512;
 
     private static final String EXP_STRING = "textures/gui/experience/";
-    private static final Identifier EXP_BAR_EMPTY = new Identifier(SemperHudClient.getModId(), EXP_STRING + "exp-bar-empty.png");
-    private static final Identifier EXP_BAR_FULL = new Identifier(SemperHudClient.getModId(), EXP_STRING + "exp-bar-full.png");
-    private static final Identifier EXP_BAR_GAIN = new Identifier(SemperHudClient.getModId(), EXP_STRING + "exp-bar-gain.png");
-    private static final Identifier EXP_INFO = new Identifier(SemperHudClient.getModId(), EXP_STRING + "exp-info.png");
+    private static final Identifier EXP_BAR_EMPTY = new Identifier(MOD_ID, EXP_STRING + "exp-bar-empty.png");
+    private static final Identifier EXP_BAR_FULL = new Identifier(MOD_ID, EXP_STRING + "exp-bar-full.png");
+    private static final Identifier EXP_BAR_GAIN = new Identifier(MOD_ID, EXP_STRING + "exp-bar-gain.png");
+    private static final Identifier EXP_INFO = new Identifier(MOD_ID, EXP_STRING + "exp-info.png");
 
     private ClientPlayerEntity clientPlayer;
 
@@ -108,7 +109,7 @@ public class ExperienceWidgetRenderer {
 
     private float getAnimationPercent(long animationCurrentTS){
         boolean animationIsDone = animationCurrentTS - this.animationStartTS > ANIMATION_DURATION;
-        return  animationIsDone ? 1 : (animationCurrentTS -  this.animationStartTS)  / (ANIMATION_DURATION * 1.0f);
+        return  animationIsDone ? 1 : (animationCurrentTS -  this.animationStartTS)  / ((float) ANIMATION_DURATION);
     }
 
     private void renderExperienceInfo(MatrixStack matrices) {
@@ -118,8 +119,8 @@ public class ExperienceWidgetRenderer {
 
         int textX = EXP_WIDGET_X + EXP_INFO_WIDTH - 4;
         int textY = EXP_WIDGET_Y + EXP_BAR_HEIGHT + 6;
-        SemperHudHelper.drawTextWithShadow(matrices, String.valueOf(currentLevel), textX, textY, 1.5f, TEXT_COLOR, 2);
-        SemperHudHelper.drawTextWithShadow(matrices, String.valueOf(currentExpToLevel), textX, textY + 20, 1f, TEXT_COLOR, 2);
+        SemperHudHelper.drawTextWithShadow(matrices, String.valueOf(currentLevel), textX, textY, 1.5f, INFO_COLOR, 2);
+        SemperHudHelper.drawTextWithShadow(matrices, String.valueOf(currentExpToLevel), textX, textY + 20, 1f, INFO_COLOR, 2);
     }
 
 
