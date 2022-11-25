@@ -7,14 +7,12 @@ import net.semperidem.semperhud.client.renderers.SemperHudRenderer;
 
 @Environment(EnvType.CLIENT)
 public class SemperHudClient implements ClientModInitializer {
+    public static final String MOD_ID = "semperhud";
     public static boolean isHudAlpha;
     public static float alpha = 0.5f;
 
     private static SemperHudRenderer instance;
 
-    public static String getModId() {
-        return "semperhud";
-    }
     @Override
     public void onInitializeClient() {
 

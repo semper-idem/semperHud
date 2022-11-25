@@ -4,12 +4,12 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.semperidem.semperhud.client.SemperHudClient;
+
+import static net.semperidem.semperhud.client.SemperHudClient.MOD_ID;
 
 public class IconsWidgetRenderer {
     private static final int ICON_WIDTH = 64;
@@ -21,10 +21,10 @@ public class IconsWidgetRenderer {
     private static final int ICONS_WIDGET_X = 92;
     private static final int ICONS_WIDGET_Y = 18;
 
-    private static final String ICONS_STRING = "textures/gui/icons/";
+    private static final String TEXTURE_LOCATION = "textures/gui/icons/";
 
-    private static final Identifier ICONS = new Identifier(SemperHudClient.getModId(), ICONS_STRING + "icons.png");
-    private static final Identifier DETAIL = new Identifier(SemperHudClient.getModId(), ICONS_STRING + "detail.png");
+    private static final Identifier ICONS = new Identifier(MOD_ID, TEXTURE_LOCATION + "icons.png");
+    private static final Identifier DETAIL = new Identifier(MOD_ID, TEXTURE_LOCATION + "detail.png");
 
 
     private MinecraftClient client;

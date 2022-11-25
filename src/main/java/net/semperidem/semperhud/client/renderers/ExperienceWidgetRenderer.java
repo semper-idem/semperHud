@@ -9,6 +9,8 @@ import net.minecraft.util.Identifier;
 import net.semperidem.semperhud.client.SemperHudClient;
 import net.semperidem.semperhud.client.SemperHudHelper;
 
+import static net.semperidem.semperhud.client.SemperHudClient.MOD_ID;
+
 public class ExperienceWidgetRenderer {
     public static final int EXP_BAR_HEIGHT = 5;
     public static final int EXP_BAR_WIDTH = 256;
@@ -19,7 +21,6 @@ public class ExperienceWidgetRenderer {
     public static final int EXP_WIDGET_X = 0;
     public static final int EXP_WIDGET_Y = 0;
 
-    private static final String MOD_ID = SemperHudClient.getModId();
     //Move to config
     public static long ANIMATION_DURATION = 2000;
 
@@ -38,8 +39,8 @@ public class ExperienceWidgetRenderer {
     private float animationLevel = 0;
     private float animationTargetLevel = 0;
 
-    public ExperienceWidgetRenderer(MinecraftClient client) {
-        this.clientPlayer = client.player;
+    public ExperienceWidgetRenderer(ClientPlayerEntity clientPlayer) {
+        this.clientPlayer = clientPlayer;
         this.animationStartLevel = getPlayerLevel();
         this.animationLevel = this.animationStartLevel;
         this.animationTargetLevel = this.animationStartLevel;

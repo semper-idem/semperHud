@@ -10,6 +10,8 @@ import net.minecraft.util.Identifier;
 import net.semperidem.semperhud.client.SemperHudClient;
 import net.semperidem.semperhud.client.SemperHudHelper;
 
+import static net.semperidem.semperhud.client.SemperHudClient.MOD_ID;
+
 public class HealthWidgetRenderer {
     private static final int HP_WIDGET_WIDTH = 192;
     private static final int HP_WIDGET_HEIGHT = 16;
@@ -23,7 +25,6 @@ public class HealthWidgetRenderer {
     private static final int INFO_COLOR = 16777215;
 
     private static final String TEXTURE_LOCATION = "textures/gui/health/";
-    private static final String MOD_ID = SemperHudClient.getModId();
 
     private static final Identifier BG_TRANSPARENT_TEXTURE = new Identifier(MOD_ID, TEXTURE_LOCATION + "hp-bar-empty.png");
     private static final Identifier BG_FULL_TEXTURE = new Identifier(MOD_ID, TEXTURE_LOCATION + "hp-bar-bg.png");
@@ -40,12 +41,8 @@ public class HealthWidgetRenderer {
     private float animationHealth = 0;
     private float animationTargetHealth = 0;
 
-    public HealthWidgetRenderer(MinecraftClient client) {
-        if (client.player == null) {
-            throw new NullPointerException("Client player shouldn't be null during " + MOD_ID + ":HealthWidgetRenderer initialization");
-        }
-
-        this.clientPlayer = client.player;
+    public HealthWidgetRenderer(ClientPlayerEntity clientPlayer) {
+        this.clientPlayer = clientPlayer;
         this.startHealth = clientPlayer.getHealth();
         this.animationHealth = startHealth;
         this.animationTargetHealth = startHealth;
