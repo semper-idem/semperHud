@@ -1,0 +1,12 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "package": "net.semperidem.semperhud.compat.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "sodium.QuadVertexSinkMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 0
+  }
+}

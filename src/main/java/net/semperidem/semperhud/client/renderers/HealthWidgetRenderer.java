@@ -1,13 +1,11 @@
 package net.semperidem.semperhud.client.renderers;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.util.Identifier;
-import net.semperidem.semperhud.client.SemperHudClient;
 import net.semperidem.semperhud.client.SemperHudHelper;
 
 import static net.semperidem.semperhud.client.SemperHudClient.MOD_ID;
@@ -16,6 +14,15 @@ public class HealthWidgetRenderer {
     private static final int HP_WIDGET_WIDTH = 192;
     private static final int HP_WIDGET_HEIGHT = 16;
     private static final int HP_INFO_OFFSET = 32;
+
+    private static final int HP_BAR_WIDTH = 160;
+    private static final int HP_BAR_HEIGHT = 8;
+
+    private static final int HP_BAR_CONTAINER_WIDTH = 164;
+    private static final int HP_BAR_CONTAINER_HEIGHT = 12;
+
+    private static final int HP_INFO_WIDTH = 32;
+    private static final int HP_INFO_HEIGHT = 16;
 
     private static final int HP_WIDGET_X = 48;
     private static final int HP_WIDGET_Y = 5;
@@ -26,8 +33,10 @@ public class HealthWidgetRenderer {
 
     private static final String TEXTURE_LOCATION = "textures/gui/health/";
 
-    private static final Identifier BG_TRANSPARENT_TEXTURE = new Identifier(MOD_ID, TEXTURE_LOCATION + "hp-bar-empty.png");
-    private static final Identifier BG_FULL_TEXTURE = new Identifier(MOD_ID, TEXTURE_LOCATION + "hp-bar-bg.png");
+    private static final Identifier HP_INFO_TEXTURE = new Identifier(MOD_ID, TEXTURE_LOCATION + "hp-info.png");
+    private static final Identifier HP_BAR_CONTAINER_TEXTURE = new Identifier(MOD_ID, TEXTURE_LOCATION + "hp-bar-empty.png");
+    private static final Identifier HP_BAR_CONTAINER_TEXTURE2 = new Identifier(MOD_ID, TEXTURE_LOCATION + "hp-bar-empty2.png");
+    private static final Identifier HP_BAR_BACKGROUND_TEXTURE = new Identifier(MOD_ID, TEXTURE_LOCATION + "hp-bar-bg.png");
     private static final Identifier ABSORPTION_TEXTURE = new Identifier(MOD_ID, TEXTURE_LOCATION + "hp-bar-abso.png");
     private static final Identifier DAMAGING_TEXTURE = new Identifier(MOD_ID, TEXTURE_LOCATION + "hp-bar-damaged.png");
     private static final Identifier POISON_TEXTURE = new Identifier(MOD_ID, TEXTURE_LOCATION + "hp-bar-poison.png");
@@ -51,17 +60,19 @@ public class HealthWidgetRenderer {
     public void renderHealthWidget(MatrixStack matrices){
         matrices.push();
 
-        drawContainer(matrices);
+        drawHealthInfo(matrices);
+        drawBar(matrices, 1, HP_BAR_BACKGROUND_TEXTURE);
         drawDamageBar(matrices);
-        drawHealthBar(matrices,getHPBarPercent(clientPlayer.getHealth()), HP_TEXTURE);
+        drawBar(matrices,getHPBarPercent(clientPlayer.getHealth()), HP_TEXTURE);
         drawAbsorptionBar(matrices);
         drawPoisonBar(matrices);
         drawWitherBar(matrices);
 
-        drawHealthInfo(matrices);
+        drawContainer(matrices);
 
         matrices.pop();
     }
+
 
     private void drawDamageBar(MatrixStack matrices) {
         long animationCurrentTS = System.currentTimeMillis();
@@ -71,28 +82,42 @@ public class HealthWidgetRenderer {
         animationTargetHealth = clientPlayer.getHealth();
         startHealth = animationHealth;
         animationHealth = getCurrentAnimationHealth(animationCurrentTS);
-        drawHealthBar(matrices, getHPBarPercent(animationHealth), DAMAGING_TEXTURE);
+        drawBar(matrices, getHPBarPercent(animationHealth), DAMAGING_TEXTURE);
     }
 
     private void drawAbsorptionBar(MatrixStack matrices){
         if (clientPlayer.hasStatusEffect(StatusEffects.ABSORPTION)) {
-            drawHealthBar(matrices,getHPBarPercent(clientPlayer.getAbsorptionAmount()), ABSORPTION_TEXTURE);
+            drawBar(matrices,getHPBarPercent(clientPlayer.getAbsorptionAmount()), ABSORPTION_TEXTURE);
         }
     }
     private void drawWitherBar(MatrixStack matrices){
         if (clientPlayer.hasStatusEffect(StatusEffects.POISON)) {
-            drawHealthBar(matrices,getHPBarPercent(clientPlayer.getHealth()), POISON_TEXTURE);
+            drawBar(matrices,getHPBarPercent(clientPlayer.getHealth()), POISON_TEXTURE);
         }
     }
     private void drawPoisonBar(MatrixStack matrices){
         if (clientPlayer.hasStatusEffect(StatusEffects.WITHER)) {
-            drawHealthBar(matrices,getHPBarPercent(clientPlayer.getHealth()), WITHER_TEXTURE);
+            drawBar(matrices,getHPBarPercent(clientPlayer.getHealth()), WITHER_TEXTURE);
         }
     }
 
     private void drawHealthInfo(MatrixStack matrices){
+        RenderSystem.setShaderTexture(0, HP_INFO_TEXTURE);
+        DrawableHelper.drawTexture(
+                matrices,
+                HP_WIDGET_X,
+                HP_WIDGET_Y,
+                0,
+                0,
+                0,
+                HP_INFO_WIDTH,
+                HP_INFO_HEIGHT,
+                HP_INFO_WIDTH,
+                HP_INFO_HEIGHT
+        );
+
         String hpString = String.format(animationTargetHealth >= 100 ? "%.0f" :"%.1f", animationTargetHealth);
-        SemperHudHelper.drawTextWithShadow(matrices, hpString, HP_WIDGET_X + 27, HP_WIDGET_Y + 4, 1f, INFO_COLOR, 2);
+        SemperHudHelper.drawTextWithShadow(matrices, hpString, HP_WIDGET_X + HP_INFO_WIDTH - 5, HP_WIDGET_Y + 4, 1f, INFO_COLOR, 2);
    }
 
     private float getHPBarPercent(float health){
@@ -109,33 +134,33 @@ public class HealthWidgetRenderer {
     }
 
     private void drawContainer(MatrixStack matrices) {
-        RenderSystem.setShaderTexture(0, BG_FULL_TEXTURE);
+        RenderSystem.setShaderTexture(0, HP_BAR_CONTAINER_TEXTURE2);
         DrawableHelper.drawTexture(
                 matrices,
-                HP_WIDGET_X,
+                HP_WIDGET_X + HP_INFO_WIDTH,
                 HP_WIDGET_Y,
                 0,
                 0,
                 0,
-                HP_WIDGET_WIDTH,
-                HP_WIDGET_HEIGHT,
-                HP_WIDGET_WIDTH,
-                HP_WIDGET_HEIGHT
+                HP_BAR_CONTAINER_WIDTH,
+                HP_BAR_CONTAINER_HEIGHT,
+                HP_BAR_CONTAINER_WIDTH,
+                HP_BAR_CONTAINER_HEIGHT
         );
     }
-    private void drawHealthBar(MatrixStack matrices, float barProgress, Identifier texture) {
+    private void drawBar(MatrixStack matrices, float barProgress, Identifier texture) {
         RenderSystem.setShaderTexture(0, texture);
         DrawableHelper.drawTexture(
                 matrices,
-                HP_WIDGET_X + HP_INFO_OFFSET,
-                HP_WIDGET_Y,
+                HP_WIDGET_X + HP_INFO_WIDTH + 2,
+                HP_WIDGET_Y + 2,
                 0,
-                HP_INFO_OFFSET,
                 0,
-                (int)(barProgress * (HP_WIDGET_WIDTH - HP_INFO_OFFSET)),
-                HP_WIDGET_HEIGHT,
-                HP_WIDGET_WIDTH,
-                HP_WIDGET_HEIGHT
+                0,
+                (int)(barProgress * (HP_BAR_WIDTH   )),
+                HP_BAR_HEIGHT,
+                HP_BAR_WIDTH,
+                HP_BAR_HEIGHT
         );
     }
 }

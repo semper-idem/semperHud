@@ -4,7 +4,7 @@
   "version": "${version}",
   "name": "SemperHud",
   "description": "",
-  "authors": [],
+  "authors": ["semper-idem"],
   "contact": {},
   "license": "MIT",
   "icon": "assets/semperhud/icon.png",
@@ -12,25 +12,18 @@
   "entrypoints": {
     "client": [
       "net.semperidem.semperhud.client.SemperHudClient"
+    ],
+    "modmenu": [
+      "net.semperidem.semperhud.client.SemperHudMM"
     ]
   },
   "mixins": [
-    "semperhud.mixins.json"
+    "semperhud.mixins.json",
+    "semperhud.compat.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.14.10",
-    "fabric": "*",
-    "minecraft": "1.19.2"
-  },
-  "custom": {
-    "modmenu": {
-      "parent": {
-        "id": "example-api",
-        "name": "Example API",
-        "description": "Modular example library",
-        "icon": "asse",
-        "badges": [ "library" ]
-      }
-    }
+    "minecraft": "~1.19",
+    "java": ">=17"
   }
 }

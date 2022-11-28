@@ -1,13 +1,17 @@
-package net.semperidem.semperhud.mixin.sodium;
+package net.semperidem.semperhud.compat.mixin.sodium;
 
 import me.jellysquid.mods.sodium.client.model.vertex.formats.quad.writer.QuadVertexBufferWriterNio;
 import me.jellysquid.mods.sodium.client.model.vertex.formats.quad.writer.QuadVertexBufferWriterUnsafe;
 import me.jellysquid.mods.sodium.client.model.vertex.formats.quad.writer.QuadVertexWriterFallback;
 import net.semperidem.semperhud.client.SemperHudClient;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
+
+
+@Pseudo
 @Mixin(value = {QuadVertexBufferWriterNio.class, QuadVertexBufferWriterUnsafe.class, QuadVertexWriterFallback.class}, remap = false)
 public class QuadVertexWriterMixin {
 

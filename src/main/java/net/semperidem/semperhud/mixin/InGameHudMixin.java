@@ -12,20 +12,42 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class InGameHudMixin {
 
     @Inject(method = "renderStatusBars", at = @At("HEAD"), cancellable = true)
-    private void overrideRenderStatusBars(MatrixStack matrices, CallbackInfo ci) {
+    private void semperHud$injectRenderStatusBars(MatrixStack matrices, CallbackInfo ci) {
         SemperHudClient.getInstance().renderStatusWidget(matrices);
         ci.cancel();
     }
     @Inject(method = "renderExperienceBar", at = @At("HEAD"), cancellable = true)
-    private void overrideRenderExperienceBars(MatrixStack matrices, int x, CallbackInfo ci) {
+    private void semperHud$injectRenderExperienceBars(MatrixStack matrices, int x, CallbackInfo ci) {
         SemperHudClient.getInstance().renderExperienceWidget(matrices);
         ci.cancel();
     }
     @Inject(method = "renderHotbar", at = @At("HEAD"), cancellable = true)
-    private void overrideRenderHotbar(float tickDelta, MatrixStack matrices, CallbackInfo ci) {
-        SemperHudClient.isHudAlpha = SemperHudClient.alpha != 1;
-        SemperHudClient.getInstance().renderHotbar(tickDelta, matrices);
-        SemperHudClient.isHudAlpha = false;
+    private void semperHud$injectRenderHotbar(float tickDelta, MatrixStack matrices, CallbackInfo ci) {
+        if (SemperHudClient.isSemperHudEnabled()) {
+            SemperHudClient.isHudAlpha = SemperHudClient.alpha != 1;
+            SemperHudClient.getInstance().renderHotbar(tickDelta, matrices);
+            SemperHudClient.isHudAlpha = false;
+            ci.cancel();
+        }
+    }
+
+    @Inject(method = "renderMountJumpBar", at = @At("HEAD"), cancellable = true)
+    private void semperHud$injectRenderJumpBar(MatrixStack matrices, int x, CallbackInfo ci) {
+        SemperHudClient.getInstance().renderExperienceWidget(matrices);
+    }
+
+
+    @Inject(method = "renderMountHealth", at = @At("HEAD"), cancellable = true)
+    private void semperHud$injectRenderMountHealth(MatrixStack matrices, CallbackInfo ci) {
         ci.cancel();
+    }
+
+
+
+    @Inject(method = "renderHeldItemTooltip", at = @At("HEAD"), cancellable = true)
+    private void SemperHud$injectStartRenderHeldItemTooltip(MatrixStack matrices, CallbackInfo ci) {
+        if (SemperHudClient.isSemperHudEnabled()) {
+            ci.cancel();
+        }
     }
 }

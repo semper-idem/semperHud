@@ -3,10 +3,6 @@
   "minVersion": "0.8",
   "package": "net.semperidem.semperhud.mixin",
   "compatibilityLevel": "JAVA_17",
-  "mixins": [
-    "sodium.QuadVertexSinkMixin",
-    "sodium.QuadVertexWriterMixin"
-  ],
   "client": [
     "InGameHudMixin",
     "render.BannerBlockEntityRendererMixin",

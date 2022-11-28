@@ -8,4 +8,7 @@ import net.fabricmc.api.Environment;
 @Environment(EnvType.CLIENT)
 @Config(name = "semperhud")
 public class SemperHudConfig implements ConfigData {
+
+    public boolean semperHotbar = true;
+
 }

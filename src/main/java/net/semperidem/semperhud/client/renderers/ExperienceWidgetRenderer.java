@@ -53,6 +53,8 @@ public class ExperienceWidgetRenderer {
         this.animationLevel = getCurrentAnimationLevel(animationCurrentTS);
 
         matrices.push();
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
         renderExperienceBar(matrices);
         renderExperienceInfo(matrices);
         matrices.pop();
