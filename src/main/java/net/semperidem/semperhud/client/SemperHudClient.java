@@ -15,7 +15,7 @@ import org.lwjgl.glfw.GLFW;
 @Environment(EnvType.CLIENT)
 public class SemperHudClient implements ClientModInitializer {
     public static final String MOD_ID = "semperhud";
-    public static boolean isHudAlpha;
+    public static boolean isHudAlpha = false;
     public static float alpha = 0.5f;
     private static SemperHudConfig config;
 
