@@ -8,9 +8,11 @@ import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.semperidem.semperhud.client.SemperHudClient;
+import net.semperidem.semperhud.client.SemperHudConfig;
 import net.semperidem.semperhud.client.SemperHudHelper;
 
 import static net.semperidem.semperhud.client.SemperHudClient.MOD_ID;
@@ -41,6 +43,13 @@ public class HotbarRenderer {
         lastRenderSelectedSlot = clientPlayer.getInventory().selectedSlot;
     }
 
+    private Identifier getWidgetTexture(){
+        return switch (SemperHudClient.config.hotbarTexture) {
+            case DARK_NUMBERED -> WIDGET_DARK_NUMBERED;
+            case DARK -> WIDGET_DARK;
+            default -> WIDGET;
+        };
+    }
     private void renderHotbarItem(int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed) {
         if (!stack.isEmpty()) {
             MatrixStack matrixStack = RenderSystem.getModelViewStack();
@@ -78,10 +87,16 @@ public class HotbarRenderer {
             RenderSystem.defaultBlendFunc();
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, SemperHudClient.alpha);
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
-            RenderSystem.setShaderTexture(0, WIDGET_DARK_NUMBERED);
+            RenderSystem.setShaderTexture(0, getWidgetTexture());
             int y0 = (MinecraftClient.getInstance().getWindow().getScaledHeight() / (2)  - 91);
+            int yOffhand = y0 + 200 + 2;
             DrawableHelper.drawTexture(matrices, 1,  (y0), 0,0,22,182 ,256,256);
+             ItemStack offhandStack = clientPlayer.getOffHandStack();
+            if (!offhandStack.isEmpty()) {
+                DrawableHelper.drawTexture(matrices, 1,  yOffhand, 23,60,22,22 ,256,256);
+            }
             DrawableHelper.drawTexture(matrices, 1, (y0 - 1 + clientPlayer.getInventory().selectedSlot * 20), 23,0,22,22 ,256,256);
+
             ItemStack currentStack = clientPlayer.getMainHandStack();
             float textAlpha = getTextAlpha(ts - selectedSlotChangedTS);
             if (!currentStack.isEmpty() && textAlpha > .15) {
@@ -96,6 +111,11 @@ public class HotbarRenderer {
                         textAlpha
                 );
             }
+
+            if (!offhandStack.isEmpty()) {
+                this.renderHotbarItem(3, yOffhand + 2, tickDelta, clientPlayer, clientPlayer.getInventory().offHand.get(0), 0);
+            }
+
             for(int n = 0; n < 9; ++n) {
                 int x = 3;
                 int y = y0 + n * 20 + 3;

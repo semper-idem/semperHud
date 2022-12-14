@@ -14,7 +14,6 @@ public interface VertexConsumerMixin {
             index = 6
     )
     default float semperHud$quad(float alpha) {
-        // Transparency level
         return (SemperHudClient.isHudAlpha ? SemperHudClient.alpha * alpha : alpha);
     }
 }

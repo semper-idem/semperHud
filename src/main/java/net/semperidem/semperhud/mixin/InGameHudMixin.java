@@ -23,7 +23,7 @@ public class InGameHudMixin {
     }
     @Inject(method = "renderHotbar", at = @At("HEAD"), cancellable = true)
     private void semperHud$injectRenderHotbar(float tickDelta, MatrixStack matrices, CallbackInfo ci) {
-        if (SemperHudClient.isSemperHudEnabled()) {
+        if (SemperHudClient.config.semperHotbar) {
             SemperHudClient.isHudAlpha = SemperHudClient.alpha != 1;
             SemperHudClient.getInstance().renderHotbar(tickDelta, matrices);
             SemperHudClient.isHudAlpha = false;
@@ -46,7 +46,7 @@ public class InGameHudMixin {
 
     @Inject(method = "renderHeldItemTooltip", at = @At("HEAD"), cancellable = true)
     private void SemperHud$injectStartRenderHeldItemTooltip(MatrixStack matrices, CallbackInfo ci) {
-        if (SemperHudClient.isSemperHudEnabled()) {
+        if (SemperHudClient.config.semperHotbar) {
             ci.cancel();
         }
     }

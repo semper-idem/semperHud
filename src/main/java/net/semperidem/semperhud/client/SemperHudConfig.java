@@ -8,7 +8,13 @@ import net.fabricmc.api.Environment;
 @Environment(EnvType.CLIENT)
 @Config(name = "semperhud")
 public class SemperHudConfig implements ConfigData {
+    public enum HotbarTexture{
+        DARK_NUMBERED,
+        DARK,
+        VANILLA
+    }
 
     public boolean semperHotbar = true;
+    public HotbarTexture hotbarTexture = HotbarTexture.DARK_NUMBERED;
 
 }

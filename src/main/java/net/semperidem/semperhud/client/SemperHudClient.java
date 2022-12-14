@@ -17,7 +17,7 @@ public class SemperHudClient implements ClientModInitializer {
     public static final String MOD_ID = "semperhud";
     public static boolean isHudAlpha = false;
     public static float alpha = 0.5f;
-    private static SemperHudConfig config;
+    public static SemperHudConfig config;
 
     private static SemperHudRenderer instance;
     private static KeyBinding openConfigKey;
@@ -26,6 +26,10 @@ public class SemperHudClient implements ClientModInitializer {
         AutoConfig.register(SemperHudConfig.class, GsonConfigSerializer::new);
         config = AutoConfig.getConfigHolder(SemperHudConfig.class).getConfig();
         registerConfigKey();
+    }
+
+    public static void reloadClient(){
+        instance = new SemperHudRenderer();
     }
 
     private void registerConfigKey(){
@@ -40,10 +44,6 @@ public class SemperHudClient implements ClientModInitializer {
                 client.setScreen(AutoConfig.getConfigScreen(SemperHudConfig.class, client.currentScreen).get());
             }
         });
-    }
-
-    public static boolean isSemperHudEnabled(){
-        return config.semperHotbar;
     }
 
     public static int modifyArgb(int argb){
