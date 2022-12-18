@@ -1,6 +1,7 @@
 package net.semperidem.semperhud.client.renderers;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.math.MatrixStack;
@@ -50,14 +51,15 @@ public class HealthWidgetRenderer {
     private float animationHealth = 0;
     private float animationTargetHealth = 0;
 
-    public HealthWidgetRenderer(ClientPlayerEntity clientPlayer) {
-        this.clientPlayer = clientPlayer;
+    public HealthWidgetRenderer() {
+        this.clientPlayer = MinecraftClient.getInstance().player;
         this.startHealth = clientPlayer.getHealth();
         this.animationHealth = startHealth;
         this.animationTargetHealth = startHealth;
     }
 
     public void renderHealthWidget(MatrixStack matrices){
+        clientPlayer = MinecraftClient.getInstance().player;
         matrices.push();
 
         drawHealthInfo(matrices);

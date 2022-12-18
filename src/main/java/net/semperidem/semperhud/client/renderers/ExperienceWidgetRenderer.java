@@ -39,14 +39,15 @@ public class ExperienceWidgetRenderer {
     private float animationLevel = 0;
     private float animationTargetLevel = 0;
 
-    public ExperienceWidgetRenderer(ClientPlayerEntity clientPlayer) {
-        this.clientPlayer = clientPlayer;
+    public ExperienceWidgetRenderer() {
+        this.clientPlayer = MinecraftClient.getInstance().player;
         this.animationStartLevel = getPlayerLevel();
         this.animationLevel = this.animationStartLevel;
         this.animationTargetLevel = this.animationStartLevel;
     }
 
     public void renderExperienceWidget(MatrixStack matrices) {
+        clientPlayer = MinecraftClient.getInstance().player;
         long animationCurrentTS = System.currentTimeMillis();
         triggerAnimation(animationCurrentTS);
 

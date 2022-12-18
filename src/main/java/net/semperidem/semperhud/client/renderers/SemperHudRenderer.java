@@ -12,14 +12,10 @@ public class SemperHudRenderer {
     private HotbarRenderer hotbarRenderer;
 
     public SemperHudRenderer() {
-        ClientPlayerEntity clientPlayer = MinecraftClient.getInstance().player;
-        if (clientPlayer == null) {
-            throw new NullPointerException("Client Player cannot be null here");
-        }
-        this.experienceWidgetRenderer = new ExperienceWidgetRenderer(clientPlayer);
-        this.healthWidgetRenderer = new HealthWidgetRenderer(clientPlayer);
-        this.iconsWidgetRenderer = new IconsWidgetRenderer(clientPlayer);
-        this.hotbarRenderer = new HotbarRenderer(clientPlayer);
+            this.experienceWidgetRenderer = new ExperienceWidgetRenderer();
+            this.healthWidgetRenderer = new HealthWidgetRenderer();
+            this.iconsWidgetRenderer = new IconsWidgetRenderer();
+            this.hotbarRenderer = new HotbarRenderer();
     }
 
     public void renderExperienceWidget(MatrixStack matrices){

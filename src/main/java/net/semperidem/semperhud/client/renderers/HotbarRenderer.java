@@ -38,8 +38,8 @@ public class HotbarRenderer {
     private long selectedSlotChangedTS;
     private int lastRenderSelectedSlot;
 
-    public HotbarRenderer(ClientPlayerEntity clientPlayer) {
-        this.clientPlayer = clientPlayer;
+    public HotbarRenderer() {
+        this.clientPlayer = MinecraftClient.getInstance().player;
         lastRenderSelectedSlot = clientPlayer.getInventory().selectedSlot;
     }
 
@@ -51,6 +51,7 @@ public class HotbarRenderer {
         };
     }
     private void renderHotbarItem(int x, int y, float tickDelta, PlayerEntity player, ItemStack stack, int seed) {
+        this.clientPlayer = MinecraftClient.getInstance().player;
         if (!stack.isEmpty()) {
             MatrixStack matrixStack = RenderSystem.getModelViewStack();
             float f = (float)stack.getBobbingAnimationTime() - tickDelta;

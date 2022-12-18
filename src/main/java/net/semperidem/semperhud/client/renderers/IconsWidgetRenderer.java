@@ -1,6 +1,7 @@
 package net.semperidem.semperhud.client.renderers;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.math.MatrixStack;
@@ -35,12 +36,13 @@ public class IconsWidgetRenderer {
 
     private ClientPlayerEntity  clientPlayer;
 
-    public IconsWidgetRenderer(ClientPlayerEntity  clientPlayer) {
-        this.clientPlayer = clientPlayer;
+    public IconsWidgetRenderer() {
+        this.clientPlayer = MinecraftClient.getInstance().player;
     }
 
 
     public void renderIconsWidget(MatrixStack matrices){
+        this.clientPlayer = MinecraftClient.getInstance().player;
         renderMountIcon(matrices);
         renderIcon(matrices, 0, String.valueOf(clientPlayer.getHungerManager().getFoodLevel()), false);
         renderIcon(matrices, 1, String.valueOf(clientPlayer.getAir() / 15), !clientPlayer.isSubmergedInWater());
