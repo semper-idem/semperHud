@@ -24,7 +24,7 @@ public class ExperienceWidgetRenderer {
     //Move to config
     public static long ANIMATION_DURATION = 2000;
 
-    private static final int INFO_COLOR = 16768512;
+    private static final int INFO_COLOR = 0xE69D20;
 
     private static final String EXP_STRING = "textures/gui/experience/";
     private static final Identifier EXP_BAR_EMPTY = new Identifier(MOD_ID, EXP_STRING + "exp-bar-empty.png");
@@ -38,8 +38,10 @@ public class ExperienceWidgetRenderer {
     private float animationStartLevel = 0;
     private float animationLevel = 0;
     private float animationTargetLevel = 0;
+    private SemperHudRenderer parent;
 
-    public ExperienceWidgetRenderer() {
+    public ExperienceWidgetRenderer(SemperHudRenderer parent) {
+        this.parent = parent;
         this.clientPlayer = MinecraftClient.getInstance().player;
         this.animationStartLevel = getPlayerLevel();
         this.animationLevel = this.animationStartLevel;
@@ -119,12 +121,12 @@ public class ExperienceWidgetRenderer {
     private void renderExperienceInfo(MatrixStack matrices) {
         renderExperienceInfoContainer(matrices);
         int currentLevel = (int)Math.floor(this.animationLevel);
-        int currentExpToLevel = (int)((Math.ceil(animationLevel) - animationLevel) * (getNextLevelExperience((int) Math.floor(animationLevel))));
+        //int currentExpToLevel = (int)((Math.ceil(animationLevel) - animationLevel) * (getNextLevelExperience((int) Math.floor(animationLevel))));
 
         int textX = EXP_WIDGET_X + EXP_INFO_WIDTH - 4;
         int textY = EXP_WIDGET_Y + EXP_BAR_HEIGHT + 6;
         SemperHudHelper.drawTextWithShadow(matrices, String.valueOf(currentLevel), textX, textY, 1.5f, INFO_COLOR, 2);
-        SemperHudHelper.drawTextWithShadow(matrices, String.valueOf(currentExpToLevel), textX, textY + 20, 1f, INFO_COLOR, 2);
+        //SemperHudHelper.drawTextWithShadow(matrices, String.valueOf(currentExpToLevel), textX, textY + 20, 1f, INFO_COLOR, 2);
     }
 
 

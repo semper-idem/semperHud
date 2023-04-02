@@ -22,7 +22,7 @@ public class HealthWidgetRenderer {
     private static final int HP_BAR_CONTAINER_WIDTH = 164;
     private static final int HP_BAR_CONTAINER_HEIGHT = 12;
 
-    private static final int HP_INFO_WIDTH = 32;
+    private static final int HP_INFO_WIDTH = 40;
     private static final int HP_INFO_HEIGHT = 16;
 
     private static final int HP_WIDGET_X = 48;
@@ -51,7 +51,10 @@ public class HealthWidgetRenderer {
     private float animationHealth = 0;
     private float animationTargetHealth = 0;
 
-    public HealthWidgetRenderer() {
+    private SemperHudRenderer parent;
+
+    public HealthWidgetRenderer(SemperHudRenderer parent) {
+        this.parent = parent;
         this.clientPlayer = MinecraftClient.getInstance().player;
         this.startHealth = clientPlayer.getHealth();
         this.animationHealth = startHealth;

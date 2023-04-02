@@ -33,12 +33,14 @@ public class HotbarRenderer {
 
 
     private ClientPlayerEntity clientPlayer;
+    private SemperHudRenderer parent;
 
 
     private long selectedSlotChangedTS;
     private int lastRenderSelectedSlot;
 
-    public HotbarRenderer() {
+    public HotbarRenderer(SemperHudRenderer parent) {
+        this.parent = parent;
         this.clientPlayer = MinecraftClient.getInstance().player;
         lastRenderSelectedSlot = clientPlayer.getInventory().selectedSlot;
     }

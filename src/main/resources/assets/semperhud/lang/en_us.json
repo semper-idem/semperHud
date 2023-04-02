@@ -1,6 +1,7 @@
 {
   "text.autoconfig.semperhud.title": "SemperHud",
   "text.autoconfig.semperhud.option.semperHotbar": "Use SemperHud hotbar",
+  "text.autoconfig.semperhud.option.semperHud": "Enable SemperHud",
   "text.autoconfig.semperhud.option.hotbarTexture": "Hotbar Texture",
   "key.semperhud.openConfig": "Open SemperHud config"
 }
