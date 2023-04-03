@@ -57,6 +57,25 @@ public class SemperHudHelper {
         matrices.pop();
     }
 
+
+    public static void drawText(MatrixStack matrices, String text, int x, int y, float scalingFactor, int textColor, int textAlignment){
+        matrices.push();
+        matrices.scale(scalingFactor,scalingFactor,scalingFactor);
+        int scaledX = (int) (x / scalingFactor) - getTextOffset(text, textAlignment);
+        int scaledY = (int) (y / scalingFactor);
+        MinecraftClient.getInstance().textRenderer.draw(matrices, text, scaledX, scaledY, textColor);
+        matrices.pop();
+    }
+
+    public static void drawTextWithBackground(MatrixStack matrices, String text, int x, int y, float scalingFactor, int textColor, int textAlignment, int backgroundColor){
+        drawText(matrices, text, x + 1, y, scalingFactor, backgroundColor, textAlignment);
+        drawText(matrices, text, x - 1, y, scalingFactor, backgroundColor, textAlignment);
+        drawText(matrices, text, x, y + 1, scalingFactor, backgroundColor, textAlignment);
+        drawText(matrices, text, x, y - 1, scalingFactor, backgroundColor, textAlignment);
+        drawText(matrices, text, x, y, scalingFactor, textColor, textAlignment);
+
+    }
+
     public static void drawTextWithShadow(MatrixStack matrices, String text, int x, int y, float scalingFactor, int textColor) {
         drawTextWithShadow(matrices, text, x, y, scalingFactor, textColor, 0);
     }

@@ -20,13 +20,11 @@ public class SemperHudRenderer {
             this.hotbarRenderer = new HotbarRenderer(this);
     }
 
-    public void renderExperienceWidget(MatrixStack matrices){
+    public void render(MatrixStack matrices){
         this.experienceWidgetRenderer.renderExperienceWidget(matrices);
-    }
-
-    public void renderStatusWidget(MatrixStack matrices) {
         this.healthWidgetRenderer.renderHealthWidget(matrices);
         this.iconsWidgetRenderer.renderIconsWidget(matrices);
+
     }
 
     public void renderHotbar(float tickDelta, MatrixStack matrices) {

@@ -15,8 +15,8 @@ public class ExperienceWidgetRenderer {
     public static final int EXP_BAR_HEIGHT = 5;
     public static final int EXP_BAR_WIDTH = 256;
 
-    public static final int EXP_INFO_HEIGHT = 48;
-    public static final int EXP_INFO_WIDTH = 48;
+    public static final int EXP_INFO_HEIGHT = 16;
+    public static final int EXP_INFO_WIDTH = 52;
 
     public static final int EXP_WIDGET_X = 0;
     public static final int EXP_WIDGET_Y = 0;
@@ -60,6 +60,7 @@ public class ExperienceWidgetRenderer {
         RenderSystem.defaultBlendFunc();
         renderExperienceBar(matrices);
         renderExperienceInfo(matrices);
+        drawHead(matrices);
         matrices.pop();
     }
 
@@ -96,6 +97,23 @@ public class ExperienceWidgetRenderer {
         );
     }
 
+
+    public void drawHead(MatrixStack matrices) {
+        RenderSystem.setShaderTexture(0, clientPlayer.getSkinTexture());
+        DrawableHelper.drawTexture(
+                matrices,
+                EXP_WIDGET_X + 5,
+                EXP_WIDGET_Y + EXP_BAR_HEIGHT + 3,
+                0,
+                8,
+                8,
+                8,
+                8,
+                64,
+                64
+        );
+    }
+
     private float getAnimationTargetProgress() {
         return Math.floor(this.animationTargetLevel) - Math.floor(this.animationLevel) > 0 ?
             1 : getLevelProgress(this.animationTargetLevel);
@@ -123,11 +141,12 @@ public class ExperienceWidgetRenderer {
         int currentLevel = (int)Math.floor(this.animationLevel);
         //int currentExpToLevel = (int)((Math.ceil(animationLevel) - animationLevel) * (getNextLevelExperience((int) Math.floor(animationLevel))));
 
-        int textX = EXP_WIDGET_X + EXP_INFO_WIDTH - 4;
-        int textY = EXP_WIDGET_Y + EXP_BAR_HEIGHT + 6;
-        SemperHudHelper.drawTextWithShadow(matrices, String.valueOf(currentLevel), textX, textY, 1.5f, INFO_COLOR, 2);
-        //SemperHudHelper.drawTextWithShadow(matrices, String.valueOf(currentExpToLevel), textX, textY + 20, 1f, INFO_COLOR, 2);
+        int textX = EXP_WIDGET_X + EXP_INFO_WIDTH - 5;
+        int textY = EXP_WIDGET_Y + EXP_BAR_HEIGHT + 3;
+        SemperHudHelper.drawTextWithBackground(matrices, String.valueOf(currentLevel), textX , textY, 1f, INFO_COLOR, 2, 0x000000);
+        SemperHudHelper.drawTextWithBackground(matrices, "Lv. ", EXP_WIDGET_X + 7 + 8, textY, 1f, INFO_COLOR, 0, 0x000000);
     }
+
 
 
 

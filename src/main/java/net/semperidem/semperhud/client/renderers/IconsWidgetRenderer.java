@@ -21,8 +21,8 @@ public class IconsWidgetRenderer {
     private static final int DETAIL_TEXTURE_WIDTH = 64;
     private static final int DETAIL_TEXTURE_HEIGHT = 32;
 
-    private static final int ICONS_WIDGET_X = 48;
-    private static final int ICONS_WIDGET_Y = 18;
+    private static final int ICONS_WIDGET_X = 4;
+    private static final int ICONS_WIDGET_Y = ExperienceWidgetRenderer.EXP_BAR_HEIGHT + ExperienceWidgetRenderer.EXP_INFO_HEIGHT;
 
     private static final float SEMI_VISIBLE_ICON_ALPHA = 0.5f;
     private static final int ICON_SPACING = 34;
@@ -52,13 +52,15 @@ public class IconsWidgetRenderer {
         renderMountIcon();
 
         //Food
-        renderIcon(clientPlayer.getHungerManager().getFoodLevel(), false, 0.3f);
+        renderFoodIcon(clientPlayer.getHungerManager().getFoodLevel(), false, 0.3f, 20f);
         //Air
-        renderIcon(clientPlayer.getAir() / 15f, !clientPlayer.isSubmergedInWater(), 0f);
+        if (clientPlayer.getMaxAir() != clientPlayer.getAir()) {
+            renderIcon(clientPlayer.getAir() / 15f, !clientPlayer.isSubmergedInWater(), 0f, 20f);
+        }
         //Armor
-        renderIcon(clientPlayer.getArmor(), clientPlayer.getArmor() == 0, 1f);
+        //renderIcon(clientPlayer.getArmor(), clientPlayer.getArmor() == 0, 1f);
         //Armor Toughness
-        renderIcon(getArmorToughness(), getArmorToughness() == 0, 1f);
+        //renderIcon(getArmorToughness(), getArmorToughness() == 0, 1f);
     }
 
     private void renderMountIcon(){
@@ -72,10 +74,11 @@ public class IconsWidgetRenderer {
 
     private void renderMountIconInner(String mountHealth){
         RenderSystem.setShaderTexture(0, ICONS);
+        int iconX = parent.MAIN_WIDGET_X  + ExperienceWidgetRenderer.EXP_INFO_WIDTH + HealthWidgetRenderer.HP_BAR_CONTAINER_WIDTH + HealthWidgetRenderer.HP_INFO_WIDTH;
         DrawableHelper.drawTexture(
                 matrices,
-                parent.MAIN_WIDGET_X + ICONS_WIDGET_X + 6,
-                parent.MAIN_WIDGET_Y +ICONS_WIDGET_Y + 4,
+                iconX + 6,
+                parent.MAIN_WIDGET_Y + ExperienceWidgetRenderer.EXP_BAR_HEIGHT,
                 0,
                 ICON_WIDTH * 4,
                 0,
@@ -89,8 +92,8 @@ public class IconsWidgetRenderer {
         RenderSystem.setShaderTexture(0, DETAIL);
         DrawableHelper.drawTexture(
                 matrices,
-                parent.MAIN_WIDGET_X + ICONS_WIDGET_X + 2,
-                parent.MAIN_WIDGET_Y + ICONS_WIDGET_Y + 4 + 4,
+                iconX + 2,
+                parent.MAIN_WIDGET_Y + ExperienceWidgetRenderer.EXP_BAR_HEIGHT + 4,
                 0,
                 0,
                 0,
@@ -102,18 +105,26 @@ public class IconsWidgetRenderer {
         SemperHudHelper.drawTextWithShadow(
                 matrices,
                 mountHealth,
-                parent.MAIN_WIDGET_X + ICONS_WIDGET_X + 32,
-                parent.MAIN_WIDGET_Y + ICONS_WIDGET_Y + 2 + 4,
+                iconX + 32,
+                parent.MAIN_WIDGET_Y + ExperienceWidgetRenderer.EXP_BAR_HEIGHT + 2,
                 1f,
                 16777215,
                 2
         );
     }
-    private void renderIcon(float iconData, boolean isSemiVisible, float warnLevel) {
+    private void renderFoodIcon(float iconData, boolean isSemiVisible, float warnLevel, float maxLevel) {
+        matrices.push();
+        renderIconFoodTexture(isSemiVisible, iconData / maxLevel);
+        renderIconTray();
+        renderIconData(iconData, warnLevel, maxLevel);
+        matrices.pop();
+        this.iconIndex++;
+    }
+    private void renderIcon(float iconData, boolean isSemiVisible, float warnLevel, float maxLevel) {
         matrices.push();
         renderIconTexture(isSemiVisible);
         renderIconTray();
-        renderIconData(iconData, warnLevel);
+        renderIconData(iconData, warnLevel, maxLevel);
         matrices.pop();
         this.iconIndex++;
     }
@@ -126,7 +137,7 @@ public class IconsWidgetRenderer {
         RenderSystem.setShaderTexture(0, ICONS);
         DrawableHelper.drawTexture(
                 matrices,
-                parent.MAIN_WIDGET_X + ICONS_WIDGET_X + ICON_SPACING * this.iconIndex + 48,
+                parent.MAIN_WIDGET_X + ICONS_WIDGET_X + ICON_SPACING * this.iconIndex + 4,
                 parent.MAIN_WIDGET_Y + ICONS_WIDGET_Y,
                 0,
                 ICON_WIDTH * this.iconIndex,
@@ -139,11 +150,32 @@ public class IconsWidgetRenderer {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
+    private void renderIconFoodTexture(boolean isSemiVisible, float visibilityPercent){
+        int foodIcon = visibilityPercent >= 1 ? 0 : visibilityPercent > 0.3f ? 1 : 2;
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, isSemiVisible ? SEMI_VISIBLE_ICON_ALPHA : 1);
+        RenderSystem.setShaderTexture(0, ICONS);
+        DrawableHelper.drawTexture(
+                matrices,
+                parent.MAIN_WIDGET_X + ICONS_WIDGET_X + ICON_SPACING * this.iconIndex + 4,
+                parent.MAIN_WIDGET_Y + ICONS_WIDGET_Y,
+                0,
+                ICON_WIDTH * this.iconIndex,
+                foodIcon * ICON_WIDTH,
+                ICON_WIDTH,
+                ICON_HEIGHT,
+                ICONS_WIDGET_TEXTURE_WIDTH,
+                ICONS_WIDGET_TEXTURE_HEIGHT
+        );
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+    }
+
     private void renderIconTray(){
         RenderSystem.setShaderTexture(0, DETAIL);
         DrawableHelper.drawTexture(
                 matrices,
-                parent.MAIN_WIDGET_X + ICONS_WIDGET_X + ICON_SPACING * this.iconIndex + 44,
+                parent.MAIN_WIDGET_X + ICONS_WIDGET_X + ICON_SPACING * this.iconIndex,
                 parent.MAIN_WIDGET_Y + ICONS_WIDGET_Y + 4,
                 0,
                 0,
@@ -166,12 +198,12 @@ public class IconsWidgetRenderer {
         return Color.ofRGB(r,g,b).getColor();
     }
 
-    private void renderIconData(float iconData, float warnLevel){
-        int color = warnLevel == 1 ? 0xFFFFFF : getWarningColor(iconData / 20f, warnLevel);
+    private void renderIconData(float iconData, float warnLevel, float maxLevel){
+        int color = warnLevel == 1 ? 0xFFFFFF : getWarningColor(iconData / maxLevel, warnLevel);
         SemperHudHelper.drawTextWithShadow(
                 matrices,
                 String.valueOf((int)iconData),
-                parent.MAIN_WIDGET_X + ICONS_WIDGET_X + this.iconIndex * ICON_SPACING + 73,
+                parent.MAIN_WIDGET_X + ICONS_WIDGET_X + this.iconIndex * ICON_SPACING + 29,
                 parent.MAIN_WIDGET_X + ICONS_WIDGET_Y + 2,
                 1f,
                 color,

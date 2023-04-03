@@ -15,7 +15,7 @@ public class SemperHudConfig implements ConfigData {
     }
 
     public boolean semperHud = true;
-    public boolean semperHotbar = true;
+    public boolean semperHotbar = false;
     public HotbarTexture hotbarTexture = HotbarTexture.DARK_NUMBERED;
 
 }

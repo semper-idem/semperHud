@@ -10,6 +10,7 @@ import net.minecraft.util.Identifier;
 import net.semperidem.semperhud.client.SemperHudHelper;
 
 import static net.semperidem.semperhud.client.SemperHudClient.MOD_ID;
+import static net.semperidem.semperhud.client.renderers.ExperienceWidgetRenderer.EXP_INFO_WIDTH;
 
 public class HealthWidgetRenderer {
     private static final int HP_WIDGET_WIDTH = 192;
@@ -17,15 +18,15 @@ public class HealthWidgetRenderer {
     private static final int HP_INFO_OFFSET = 32;
 
     private static final int HP_BAR_WIDTH = 160;
-    private static final int HP_BAR_HEIGHT = 8;
+    private static final int HP_BAR_HEIGHT = 10;
 
-    private static final int HP_BAR_CONTAINER_WIDTH = 164;
-    private static final int HP_BAR_CONTAINER_HEIGHT = 12;
+    public static final int HP_BAR_CONTAINER_WIDTH = 164;
+    private static final int HP_BAR_CONTAINER_HEIGHT = 14;
 
-    private static final int HP_INFO_WIDTH = 40;
-    private static final int HP_INFO_HEIGHT = 16;
+    public static final int HP_INFO_WIDTH = 40;
+    private static final int HP_INFO_HEIGHT = 14;
 
-    private static final int HP_WIDGET_X = 48;
+    private static final int HP_WIDGET_X = EXP_INFO_WIDTH;
     private static final int HP_WIDGET_Y = 5;
 
     private static final int ANIMATION_DURATION = 4000;
@@ -36,7 +37,6 @@ public class HealthWidgetRenderer {
 
     private static final Identifier HP_INFO_TEXTURE = new Identifier(MOD_ID, TEXTURE_LOCATION + "hp-info.png");
     private static final Identifier HP_BAR_CONTAINER_TEXTURE = new Identifier(MOD_ID, TEXTURE_LOCATION + "hp-bar-empty.png");
-    private static final Identifier HP_BAR_CONTAINER_TEXTURE2 = new Identifier(MOD_ID, TEXTURE_LOCATION + "hp-bar-empty2.png");
     private static final Identifier HP_BAR_BACKGROUND_TEXTURE = new Identifier(MOD_ID, TEXTURE_LOCATION + "hp-bar-bg.png");
     private static final Identifier ABSORPTION_TEXTURE = new Identifier(MOD_ID, TEXTURE_LOCATION + "hp-bar-abso.png");
     private static final Identifier DAMAGING_TEXTURE = new Identifier(MOD_ID, TEXTURE_LOCATION + "hp-bar-damaged.png");
@@ -110,7 +110,7 @@ public class HealthWidgetRenderer {
         RenderSystem.setShaderTexture(0, HP_INFO_TEXTURE);
         DrawableHelper.drawTexture(
                 matrices,
-                HP_WIDGET_X,
+                HP_WIDGET_X + HP_BAR_CONTAINER_WIDTH,
                 HP_WIDGET_Y,
                 0,
                 0,
@@ -121,12 +121,16 @@ public class HealthWidgetRenderer {
                 HP_INFO_HEIGHT
         );
 
-        String hpString = String.format(animationTargetHealth >= 100 ? "%.0f" :"%.1f", animationTargetHealth);
-        SemperHudHelper.drawTextWithShadow(matrices, hpString, HP_WIDGET_X + HP_INFO_WIDTH - 5, HP_WIDGET_Y + 4, 1f, INFO_COLOR, 2);
+        String hpString = String.format("%.0f", animationTargetHealth);
+        SemperHudHelper.drawTextWithShadow(matrices, hpString, HP_WIDGET_X + 25 + HP_BAR_CONTAINER_WIDTH, HP_WIDGET_Y + 3, 1f, INFO_COLOR, 2);
    }
 
     private float getHPBarPercent(float health){
-        return Math.min(1, health / clientPlayer.getMaxHealth());
+        float percent = health / clientPlayer.getMaxHealth() * 100;
+        if ((percent) % 2 == 1) {
+            percent--;
+        }
+        return Math.min(1, percent / 100);
     }
 
     private float getCurrentAnimationHealth(long animationCurrentTS) {
@@ -135,14 +139,14 @@ public class HealthWidgetRenderer {
 
     private float getAnimationPercent(long animationCurrentTS){
         boolean animationIsDone = animationCurrentTS - this.animationStartTS > ANIMATION_DURATION;
-        return  animationIsDone ? 1 : (animationCurrentTS -  this.animationStartTS)  / ((float) ANIMATION_DURATION);
+        return animationIsDone ? 1 : (animationCurrentTS -  this.animationStartTS)  / ((float) ANIMATION_DURATION);
     }
 
     private void drawContainer(MatrixStack matrices) {
-        RenderSystem.setShaderTexture(0, HP_BAR_CONTAINER_TEXTURE2);
+        RenderSystem.setShaderTexture(0, HP_BAR_CONTAINER_TEXTURE);
         DrawableHelper.drawTexture(
                 matrices,
-                HP_WIDGET_X + HP_INFO_WIDTH,
+                HP_WIDGET_X,
                 HP_WIDGET_Y,
                 0,
                 0,
@@ -157,7 +161,7 @@ public class HealthWidgetRenderer {
         RenderSystem.setShaderTexture(0, texture);
         DrawableHelper.drawTexture(
                 matrices,
-                HP_WIDGET_X + HP_INFO_WIDTH + 2,
+                HP_WIDGET_X + 2,
                 HP_WIDGET_Y + 2,
                 0,
                 0,
